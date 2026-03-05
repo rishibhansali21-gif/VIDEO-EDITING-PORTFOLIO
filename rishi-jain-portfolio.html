@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rishi Jain — Creative Editor</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --white: #ffffff;
+    --off: #f7f6f3;
+    --ink: #1a1a18;
+    --mid: #6b6b67;
+    --light: #c8c8c2;
+  }
+
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--white);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  .cursor {
+    position: fixed; width: 8px; height: 8px;
+    background: var(--ink); border-radius: 50%;
+    pointer-events: none; z-index: 9999;
+    transition: transform 0.15s ease;
+    transform: translate(-50%, -50%);
+  }
+  .cursor-ring {
+    position: fixed; width: 32px; height: 32px;
+    border: 1px solid var(--ink); border-radius: 50%;
+    pointer-events: none; z-index: 9998;
+    transition: transform 0.4s ease, width 0.3s, height 0.3s, opacity 0.3s;
+    transform: translate(-50%, -50%); opacity: 0.4;
+  }
+
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 28px 48px;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 300; letter-spacing: 0.04em;
+    color: var(--ink); text-decoration: none;
+  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
+  .nav-links a {
+    font-size: 12px; font-weight: 400;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--mid); text-decoration: none; transition: color 0.2s;
+  }
+  .nav-links a:hover { color: var(--ink); }
+
+  /* Hero */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column; justify-content: center;
+    padding: 140px 48px 80px;
+    max-width: 1000px;
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--mid); border: 1px solid var(--light);
+    padding: 6px 14px; margin-bottom: 40px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards;
+  }
+  .hero-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(72px, 10vw, 130px);
+    font-weight: 300; line-height: 0.95; letter-spacing: -0.02em;
+    margin-bottom: 48px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.25s forwards;
+  }
+  .hero-title em { font-style: italic; color: var(--mid); }
+  .hero-bottom {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    gap: 48px; flex-wrap: wrap;
+    opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
+  }
+  .hero-desc {
+    font-size: 15px; font-weight: 300; color: var(--mid);
+    line-height: 1.8; max-width: 440px;
+  }
+  .hero-cta {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--white); background: var(--ink);
+    padding: 16px 32px; text-decoration: none; white-space: nowrap;
+    transition: background 0.3s, gap 0.3s; flex-shrink: 0;
+  }
+  .hero-cta:hover { background: #333; gap: 20px; }
+
+  /* Stats */
+  .stats-row {
+    display: flex;
+    border-top: 1px solid var(--off); border-bottom: 1px solid var(--off);
+    margin: 0 48px;
+    opacity: 0; animation: fadeUp 0.8s ease 0.55s forwards;
+  }
+  .stat-item {
+    flex: 1; padding: 32px 0; border-right: 1px solid var(--off);
+    text-align: center;
+  }
+  .stat-item:last-child { border-right: none; }
+  .stat-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 36px; font-weight: 300; display: block; margin-bottom: 4px;
+  }
+  .stat-label {
+    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid);
+  }
+
+  /* Sections */
+  section { padding: 100px 48px; }
+  .section-header {
+    display: flex; align-items: baseline; gap: 24px; margin-bottom: 64px;
+  }
+  .section-num { font-size: 11px; letter-spacing: 0.2em; color: var(--light); }
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 4vw, 52px); font-weight: 300;
+  }
+  .section-line { flex: 1; height: 1px; background: var(--off); margin-left: auto; max-width: 200px; }
+
+  /* Work grid */
+  .work-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
+  }
+  .work-item {
+    position: relative; aspect-ratio: 9/16;
+    background: var(--off); overflow: hidden;
+    cursor: pointer; text-decoration: none; display: block;
+  }
+  .work-item:nth-child(1),
+  .work-item:nth-child(5) { grid-column: span 2; aspect-ratio: 16/9; }
+
+  .work-thumb {
+    position: absolute; inset: 0; transition: transform 0.6s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .work-item:hover .work-thumb { transform: scale(1.04); }
+
+  .work-item:nth-child(1) .work-thumb  { background: linear-gradient(145deg, #ede8e2, #ddd5c8); }
+  .work-item:nth-child(2) .work-thumb  { background: linear-gradient(145deg, #e2e8e4, #c8d5cc); }
+  .work-item:nth-child(3) .work-thumb  { background: linear-gradient(145deg, #e8e2e8, #d5c8d5); }
+  .work-item:nth-child(4) .work-thumb  { background: linear-gradient(145deg, #e8e6e0, #d8d4c8); }
+  .work-item:nth-child(5) .work-thumb  { background: linear-gradient(145deg, #e0e6e8, #c8d4d8); }
+  .work-item:nth-child(6) .work-thumb  { background: linear-gradient(145deg, #e8e4e0, #d8d0c8); }
+  .work-item:nth-child(7) .work-thumb  { background: linear-gradient(145deg, #e4e8e0, #d0d8c8); }
+  .work-item:nth-child(8) .work-thumb  { background: linear-gradient(145deg, #e8e0e4, #d8c8d0); }
+  .work-item:nth-child(9) .work-thumb  { background: linear-gradient(145deg, #e0e4e8, #c8d0d8); }
+  .work-item:nth-child(10) .work-thumb { background: linear-gradient(145deg, #e8e8e0, #d8d8c8); }
+
+  .work-play-btn {
+    width: 52px; height: 52px;
+    border: 1px solid rgba(0,0,0,0.15); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--mid); font-size: 16px; transition: all 0.3s;
+  }
+  .work-item:hover .work-play-btn {
+    border-color: var(--ink); color: var(--ink); transform: scale(1.1);
+  }
+  .work-overlay {
+    position: absolute; inset: 0;
+    background: rgba(26,26,24,0.88);
+    opacity: 0; transition: opacity 0.4s ease;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .work-item:hover .work-overlay { opacity: 1; }
+  .work-overlay-inner { text-align: center; color: var(--white); padding: 20px; }
+  .work-watch {
+    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
+    color: rgba(255,255,255,0.5); margin-bottom: 8px;
+  }
+  .work-watch-link {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 300; color: var(--white);
+    border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 2px;
+  }
+
+  /* About */
+  .about-section { background: var(--off); }
+  .about-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; align-items: center; }
+  .about-monogram {
+    aspect-ratio: 3/4; background: var(--white);
+    display: flex; align-items: center; justify-content: center;
+  }
+  .about-monogram-inner {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 100px; font-weight: 300; color: var(--light); font-style: italic;
+  }
+  .about-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(28px, 3.5vw, 44px); font-weight: 300;
+    line-height: 1.2; margin-bottom: 28px;
+  }
+  .about-heading em { font-style: italic; color: var(--mid); }
+  .about-body {
+    font-size: 15px; font-weight: 300; color: var(--mid);
+    line-height: 1.9; margin-bottom: 40px;
+  }
+  .skills-list { display: flex; flex-wrap: wrap; gap: 10px; }
+  .skill-tag {
+    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
+    border: 1px solid var(--light); padding: 8px 16px; color: var(--mid);
+  }
+
+  /* Services */
+  .services-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--light); border: 1px solid var(--light);
+  }
+  .service-card {
+    background: var(--white); padding: 48px 36px; transition: background 0.3s;
+  }
+  .service-card:hover { background: var(--off); }
+  .service-num {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 48px; font-weight: 300; color: var(--off);
+    display: block; margin-bottom: 20px; line-height: 1;
+  }
+  .service-name {
+    font-size: 14px; font-weight: 500;
+    letter-spacing: 0.05em; margin-bottom: 12px; text-transform: uppercase;
+  }
+  .service-desc { font-size: 13px; font-weight: 300; color: var(--mid); line-height: 1.8; }
+
+  /* Contact */
+  .contact-section {
+    background: var(--ink); color: var(--white);
+    text-align: center; padding: 120px 48px;
+  }
+  .contact-pre {
+    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--light); margin-bottom: 24px;
+  }
+  .contact-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(40px, 6vw, 80px); font-weight: 300;
+    line-height: 1.1; margin-bottom: 48px;
+  }
+  .contact-title em { font-style: italic; color: var(--light); }
+  .contact-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
+  .contact-link {
+    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--white); text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 4px;
+    transition: border-color 0.2s;
+  }
+  .contact-link:hover { border-color: var(--white); }
+
+  footer {
+    padding: 28px 48px;
+    display: flex; justify-content: space-between; align-items: center;
+    border-top: 1px solid var(--off);
+    font-size: 11px; letter-spacing: 0.08em; color: var(--light);
+  }
+
+  /* Modal */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+    z-index: 1000; display: none;
+    align-items: center; justify-content: center; padding: 24px;
+  }
+  .modal-overlay.active { display: flex; }
+  .modal-box { background: #000; width: 100%; max-width: 860px; position: relative; }
+  .modal-close {
+    position: absolute; top: -36px; right: 0;
+    color: rgba(255,255,255,0.5); font-size: 12px;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    cursor: pointer; background: none; border: none; transition: color 0.2s;
+  }
+  .modal-close:hover { color: #fff; }
+  .modal-embed { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .reveal {
+    opacity: 0; transform: translateY(24px);
+    transition: opacity 0.8s ease, transform 0.8s ease;
+  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 100px 24px 60px; }
+    .stats-row { margin: 0 24px; }
+    section { padding: 64px 24px; }
+    .about-grid { grid-template-columns: 1fr; }
+    .about-monogram { display: none; }
+    .work-grid { grid-template-columns: 1fr 1fr; }
+    .work-item:nth-child(1), .work-item:nth-child(5) { grid-column: span 2; }
+    .services-grid { grid-template-columns: 1fr; }
+    footer { flex-direction: column; gap: 8px; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal">
+  <div class="modal-box">
+    <button class="modal-close" onclick="closeModal()">✕ Close</button>
+    <iframe class="modal-embed" id="modalFrame" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
+<nav>
+  <a href="#" class="nav-logo">Rishi Jain</a>
+  <ul class="nav-links">
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<section class="hero">
+  <span class="hero-tag">Creative Editor</span>
+  <h1 class="hero-title">
+    Rishi<br><em>Jain.</em>
+  </h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      Self-taught creative editor with 3+ years of experience. I've worked in professional studios and freelanced across multiple niches — crafting reels, ad films, and short-form content that actually performs.
+    </p>
+    <a href="#work" class="hero-cta">View My Work →</a>
+  </div>
+</section>
+
+<div class="stats-row">
+  <div class="stat-item">
+    <span class="stat-num">3+</span>
+    <span class="stat-label">Years Experience</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">50+</span>
+    <span class="stat-label">Videos Edited</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">100%</span>
+    <span class="stat-label">Self-Taught</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num">∞</span>
+    <span class="stat-label">Creative Drive</span>
+  </div>
+</div>
+
+<!-- Work — replace YOUR_LINK_X with your YouTube embed URL or Google Drive embed URL -->
+<section id="work">
+  <div class="section-header reveal">
+    <span class="section-num">01</span>
+    <h2 class="section-title">Selected Work</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="work-grid reveal">
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_1')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 01 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_2')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 02 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_3')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 03 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_4')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 04 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_5')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 05 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_6')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 06 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_7')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 07 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_8')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 08 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_9')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 09 →</span></div></div>
+    </a>
+    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_10')">
+      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
+      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 10 →</span></div></div>
+    </a>
+  </div>
+</section>
+
+<section id="about" class="about-section">
+  <div class="section-header reveal">
+    <span class="section-num">02</span>
+    <h2 class="section-title">About</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="about-grid">
+    <div class="about-monogram reveal"><div class="about-monogram-inner">RJ</div></div>
+    <div class="reveal">
+      <h3 class="about-heading">I edit with<br>intention,<br><em>not just software</em></h3>
+      <p class="about-body">
+        I'm Rishi — a self-taught creative editor with 3+ years of hands-on experience across professional studios and freelance projects. I've edited everything from high-energy reels to cinematic ad films across multiple industries.<br><br>
+        I didn't learn this from a course. I learned it by doing it, breaking it, and doing it better — which means every edit I deliver comes from real creative instinct, not a template.
+      </p>
+      <div class="skills-list">
+        <span class="skill-tag">Premiere Pro</span>
+        <span class="skill-tag">After Effects</span>
+        <span class="skill-tag">Motion Graphics</span>
+        <span class="skill-tag">Reels & Short-form</span>
+        <span class="skill-tag">Ad Film Editing</span>
+        <span class="skill-tag">Colour Grading</span>
+        <span class="skill-tag">CapCut</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="services">
+  <div class="section-header reveal">
+    <span class="section-num">03</span>
+    <h2 class="section-title">What I Do</h2>
+    <div class="section-line"></div>
+  </div>
+  <div class="services-grid reveal">
+    <div class="service-card">
+      <span class="service-num">01</span>
+      <p class="service-name">Short-form Reels</p>
+      <p class="service-desc">Fast, punchy, scroll-stopping reels for Instagram and YouTube Shorts. Built to drive views, saves, and engagement.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">02</span>
+      <p class="service-name">Ad Film Editing</p>
+      <p class="service-desc">Brand ads that make your product feel premium before anyone touches it. Colour, motion, and pacing working together.</p>
+    </div>
+    <div class="service-card">
+      <span class="service-num">03</span>
+      <p class="service-name">Motion Graphics</p>
+      <p class="service-desc">Transitions, text animations, and graphic overlays that give your content a clean, professional identity on screen.</p>
+    </div>
+  </div>
+</section>
+
+<section id="contact" class="contact-section">
+  <p class="contact-pre">Let's work together</p>
+  <h2 class="contact-title">Got a project?<br>Let's <em>make it happen.</em></h2>
+  <div class="contact-links">
+    <a href="https://wa.me/919328299848" class="contact-link" target="_blank">WhatsApp</a>
+    <a href="mailto:hello.niori@gmail.com" class="contact-link">Email</a>
+    <a href="https://instagram.com/niori.co" class="contact-link" target="_blank">Instagram</a>
+  </div>
+</section>
+
+<footer>
+  <span>© 2025 Rishi Jain</span>
+  <span>Creative Editor</span>
+</footer>
+
+<script>
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  document.addEventListener('mousemove', e => {
+    cursor.style.left = e.clientX + 'px';
+    cursor.style.top = e.clientY + 'px';
+    setTimeout(() => { ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; }, 80);
+  });
+
+  function openVideo(e, src) {
+    e.preventDefault();
+    if (!src || src.startsWith('YOUR_')) return;
+    document.getElementById('modalFrame').src = src;
+    document.getElementById('modal').classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    document.getElementById('modal').classList.remove('active');
+    document.getElementById('modalFrame').src = '';
+    document.body.style.overflow = '';
+  }
+  document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach((entry, i) => { if (entry.isIntersecting) setTimeout(() => entry.target.classList.add('visible'), i * 100); });
+  }, { threshold: 0.08 });
+  reveals.forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
