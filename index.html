@@ -1,516 +1,1211 @@
 <!DOCTYPE html>
+
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Rishi Jain — Creative Editor</title>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<title>Kapda AI — Textile Stock Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-
   :root {
-    --white: #ffffff;
-    --off: #f7f6f3;
-    --ink: #1a1a18;
-    --mid: #6b6b67;
-    --light: #c8c8c2;
+    --bg: #0d0b08;
+    --surface: #161410;
+    --card: #1e1b16;
+    --border: #2e2920;
+    --gold: #c8973a;
+    --gold-light: #e5b96a;
+    --green: #2d6a3f;
+    --green-light: #3d8f55;
+    --text: #f0ead8;
+    --muted: #8a7d65;
+    --red: #c0392b;
+    --font-display: 'Playfair Display', serif;
+    --font-body: 'DM Sans', sans-serif;
   }
 
-  html { scroll-behavior: smooth; }
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: var(--white);
-    color: var(--ink);
-    overflow-x: hidden;
-    cursor: none;
-  }
+- { margin: 0; padding: 0; box-sizing: border-box; }
 
-  .cursor {
-    position: fixed; width: 8px; height: 8px;
-    background: var(--ink); border-radius: 50%;
-    pointer-events: none; z-index: 9999;
-    transition: transform 0.15s ease;
-    transform: translate(-50%, -50%);
-  }
-  .cursor-ring {
-    position: fixed; width: 32px; height: 32px;
-    border: 1px solid var(--ink); border-radius: 50%;
-    pointer-events: none; z-index: 9998;
-    transition: transform 0.4s ease, width 0.3s, height 0.3s, opacity 0.3s;
-    transform: translate(-50%, -50%); opacity: 0.4;
-  }
+body {
+background: var(–bg);
+color: var(–text);
+font-family: var(–font-body);
+min-height: 100vh;
+display: flex;
+flex-direction: column;
+}
 
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; justify-content: space-between; align-items: center;
-    padding: 28px 48px;
-    background: rgba(255,255,255,0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0,0,0,0.04);
-  }
-  .nav-logo {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 20px; font-weight: 300; letter-spacing: 0.04em;
-    color: var(--ink); text-decoration: none;
-  }
-  .nav-links { display: flex; gap: 36px; list-style: none; }
-  .nav-links a {
-    font-size: 12px; font-weight: 400;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--mid); text-decoration: none; transition: color 0.2s;
-  }
-  .nav-links a:hover { color: var(--ink); }
+/* HEADER */
+header {
+padding: 20px 32px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+justify-content: space-between;
+background: rgba(13,11,8,0.9);
+backdrop-filter: blur(12px);
+position: sticky;
+top: 0;
+z-index: 100;
+}
 
-  /* Hero */
-  .hero {
-    min-height: 100vh;
-    display: flex; flex-direction: column; justify-content: center;
-    padding: 140px 48px 80px;
-    max-width: 1000px;
-  }
-  .hero-tag {
-    display: inline-block;
-    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: var(--mid); border: 1px solid var(--light);
-    padding: 6px 14px; margin-bottom: 40px;
-    opacity: 0; animation: fadeUp 0.8s ease 0.1s forwards;
-  }
-  .hero-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(72px, 10vw, 130px);
-    font-weight: 300; line-height: 0.95; letter-spacing: -0.02em;
-    margin-bottom: 48px;
-    opacity: 0; animation: fadeUp 0.8s ease 0.25s forwards;
-  }
-  .hero-title em { font-style: italic; color: var(--mid); }
-  .hero-bottom {
-    display: flex; align-items: flex-end; justify-content: space-between;
-    gap: 48px; flex-wrap: wrap;
-    opacity: 0; animation: fadeUp 0.8s ease 0.4s forwards;
-  }
-  .hero-desc {
-    font-size: 15px; font-weight: 300; color: var(--mid);
-    line-height: 1.8; max-width: 440px;
-  }
-  .hero-cta {
-    display: inline-flex; align-items: center; gap: 12px;
-    font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--white); background: var(--ink);
-    padding: 16px 32px; text-decoration: none; white-space: nowrap;
-    transition: background 0.3s, gap 0.3s; flex-shrink: 0;
-  }
-  .hero-cta:hover { background: #333; gap: 20px; }
+.logo {
+display: flex;
+align-items: center;
+gap: 12px;
+}
 
-  /* Stats */
-  .stats-row {
-    display: flex;
-    border-top: 1px solid var(--off); border-bottom: 1px solid var(--off);
-    margin: 0 48px;
-    opacity: 0; animation: fadeUp 0.8s ease 0.55s forwards;
-  }
-  .stat-item {
-    flex: 1; padding: 32px 0; border-right: 1px solid var(--off);
-    text-align: center;
-  }
-  .stat-item:last-child { border-right: none; }
-  .stat-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 36px; font-weight: 300; display: block; margin-bottom: 4px;
-  }
-  .stat-label {
-    font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--mid);
-  }
+.logo-icon {
+width: 38px;
+height: 38px;
+background: linear-gradient(135deg, var(–gold), var(–green));
+border-radius: 10px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 18px;
+}
 
-  /* Sections */
-  section { padding: 100px 48px; }
-  .section-header {
-    display: flex; align-items: baseline; gap: 24px; margin-bottom: 64px;
-  }
-  .section-num { font-size: 11px; letter-spacing: 0.2em; color: var(--light); }
-  .section-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(32px, 4vw, 52px); font-weight: 300;
-  }
-  .section-line { flex: 1; height: 1px; background: var(--off); margin-left: auto; max-width: 200px; }
+.logo-text {
+font-family: var(–font-display);
+font-size: 22px;
+font-weight: 700;
+color: var(–gold);
+letter-spacing: 0.5px;
+}
 
-  /* Work grid */
-  .work-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr); gap: 3px;
-  }
-  .work-item {
-    position: relative; aspect-ratio: 9/16;
-    background: var(--off); overflow: hidden;
-    cursor: pointer; text-decoration: none; display: block;
-  }
-  .work-item:nth-child(1),
-  .work-item:nth-child(5) { grid-column: span 2; aspect-ratio: 16/9; }
+.logo-sub {
+font-size: 11px;
+color: var(–muted);
+letter-spacing: 2px;
+text-transform: uppercase;
+}
 
-  .work-thumb {
-    position: absolute; inset: 0; transition: transform 0.6s ease;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .work-item:hover .work-thumb { transform: scale(1.04); }
+.header-badge {
+background: var(–green);
+color: #fff;
+font-size: 11px;
+font-weight: 600;
+padding: 4px 12px;
+border-radius: 20px;
+letter-spacing: 0.5px;
+}
 
-  .work-item:nth-child(1) .work-thumb  { background: linear-gradient(145deg, #ede8e2, #ddd5c8); }
-  .work-item:nth-child(2) .work-thumb  { background: linear-gradient(145deg, #e2e8e4, #c8d5cc); }
-  .work-item:nth-child(3) .work-thumb  { background: linear-gradient(145deg, #e8e2e8, #d5c8d5); }
-  .work-item:nth-child(4) .work-thumb  { background: linear-gradient(145deg, #e8e6e0, #d8d4c8); }
-  .work-item:nth-child(5) .work-thumb  { background: linear-gradient(145deg, #e0e6e8, #c8d4d8); }
-  .work-item:nth-child(6) .work-thumb  { background: linear-gradient(145deg, #e8e4e0, #d8d0c8); }
-  .work-item:nth-child(7) .work-thumb  { background: linear-gradient(145deg, #e4e8e0, #d0d8c8); }
-  .work-item:nth-child(8) .work-thumb  { background: linear-gradient(145deg, #e8e0e4, #d8c8d0); }
-  .work-item:nth-child(9) .work-thumb  { background: linear-gradient(145deg, #e0e4e8, #c8d0d8); }
-  .work-item:nth-child(10) .work-thumb { background: linear-gradient(145deg, #e8e8e0, #d8d8c8); }
+/* LAYOUT */
+.app {
+display: grid;
+grid-template-columns: 320px 1fr;
+flex: 1;
+height: calc(100vh - 65px);
+}
 
-  .work-play-btn {
-    width: 52px; height: 52px;
-    border: 1px solid rgba(0,0,0,0.15); border-radius: 50%;
-    display: flex; align-items: center; justify-content: center;
-    color: var(--mid); font-size: 16px; transition: all 0.3s;
-  }
-  .work-item:hover .work-play-btn {
-    border-color: var(--ink); color: var(--ink); transform: scale(1.1);
-  }
-  .work-overlay {
-    position: absolute; inset: 0;
-    background: rgba(26,26,24,0.88);
-    opacity: 0; transition: opacity 0.4s ease;
-    display: flex; align-items: center; justify-content: center;
-  }
-  .work-item:hover .work-overlay { opacity: 1; }
-  .work-overlay-inner { text-align: center; color: var(--white); padding: 20px; }
-  .work-watch {
-    font-size: 11px; letter-spacing: 0.2em; text-transform: uppercase;
-    color: rgba(255,255,255,0.5); margin-bottom: 8px;
-  }
-  .work-watch-link {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 22px; font-weight: 300; color: var(--white);
-    border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 2px;
-  }
+/* SIDEBAR */
+.sidebar {
+border-right: 1px solid var(–border);
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
 
-  /* About */
-  .about-section { background: var(--off); }
-  .about-grid { display: grid; grid-template-columns: 1fr 1.3fr; gap: 80px; align-items: center; }
-  .about-monogram {
-    aspect-ratio: 3/4; background: var(--white);
-    display: flex; align-items: center; justify-content: center;
-  }
-  .about-monogram-inner {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 100px; font-weight: 300; color: var(--light); font-style: italic;
-  }
-  .about-heading {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(28px, 3.5vw, 44px); font-weight: 300;
-    line-height: 1.2; margin-bottom: 28px;
-  }
-  .about-heading em { font-style: italic; color: var(--mid); }
-  .about-body {
-    font-size: 15px; font-weight: 300; color: var(--mid);
-    line-height: 1.9; margin-bottom: 40px;
-  }
-  .skills-list { display: flex; flex-wrap: wrap; gap: 10px; }
-  .skill-tag {
-    font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase;
-    border: 1px solid var(--light); padding: 8px 16px; color: var(--mid);
-  }
+.sidebar-tabs {
+display: flex;
+border-bottom: 1px solid var(–border);
+}
 
-  /* Services */
-  .services-grid {
-    display: grid; grid-template-columns: repeat(3, 1fr);
-    gap: 1px; background: var(--light); border: 1px solid var(--light);
-  }
-  .service-card {
-    background: var(--white); padding: 48px 36px; transition: background 0.3s;
-  }
-  .service-card:hover { background: var(--off); }
-  .service-num {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 48px; font-weight: 300; color: var(--off);
-    display: block; margin-bottom: 20px; line-height: 1;
-  }
-  .service-name {
-    font-size: 14px; font-weight: 500;
-    letter-spacing: 0.05em; margin-bottom: 12px; text-transform: uppercase;
-  }
-  .service-desc { font-size: 13px; font-weight: 300; color: var(--mid); line-height: 1.8; }
+.tab {
+flex: 1;
+padding: 14px;
+text-align: center;
+font-size: 12px;
+font-weight: 600;
+letter-spacing: 1px;
+text-transform: uppercase;
+color: var(–muted);
+cursor: pointer;
+transition: all 0.2s;
+border-bottom: 2px solid transparent;
+}
 
-  /* Contact */
-  .contact-section {
-    background: var(--ink); color: var(--white);
-    text-align: center; padding: 120px 48px;
-  }
-  .contact-pre {
-    font-size: 11px; letter-spacing: 0.25em; text-transform: uppercase;
-    color: var(--light); margin-bottom: 24px;
-  }
-  .contact-title {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: clamp(40px, 6vw, 80px); font-weight: 300;
-    line-height: 1.1; margin-bottom: 48px;
-  }
-  .contact-title em { font-style: italic; color: var(--light); }
-  .contact-links { display: flex; gap: 24px; justify-content: center; flex-wrap: wrap; }
-  .contact-link {
-    font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
-    color: var(--white); text-decoration: none;
-    border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 4px;
-    transition: border-color 0.2s;
-  }
-  .contact-link:hover { border-color: var(--white); }
+.tab.active {
+color: var(–gold);
+border-bottom-color: var(–gold);
+background: rgba(200,151,58,0.06);
+}
 
-  footer {
-    padding: 28px 48px;
-    display: flex; justify-content: space-between; align-items: center;
-    border-top: 1px solid var(--off);
-    font-size: 11px; letter-spacing: 0.08em; color: var(--light);
-  }
+.tab:hover:not(.active) { color: var(–text); }
 
-  /* Modal */
-  .modal-overlay {
-    position: fixed; inset: 0; background: rgba(0,0,0,0.92);
-    z-index: 1000; display: none;
-    align-items: center; justify-content: center; padding: 24px;
-  }
-  .modal-overlay.active { display: flex; }
-  .modal-box { background: #000; width: 100%; max-width: 860px; position: relative; }
-  .modal-close {
-    position: absolute; top: -36px; right: 0;
-    color: rgba(255,255,255,0.5); font-size: 12px;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    cursor: pointer; background: none; border: none; transition: color 0.2s;
-  }
-  .modal-close:hover { color: #fff; }
-  .modal-embed { width: 100%; aspect-ratio: 16/9; border: none; display: block; }
+.sidebar-content {
+flex: 1;
+overflow-y: auto;
+padding: 16px;
+}
 
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(30px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-  .reveal {
-    opacity: 0; transform: translateY(24px);
-    transition: opacity 0.8s ease, transform 0.8s ease;
-  }
-  .reveal.visible { opacity: 1; transform: translateY(0); }
+.sidebar-content::-webkit-scrollbar { width: 4px; }
+.sidebar-content::-webkit-scrollbar-track { background: transparent; }
+.sidebar-content::-webkit-scrollbar-thumb { background: var(–border); border-radius: 2px; }
 
-  @media (max-width: 768px) {
-    nav { padding: 20px 24px; }
-    .nav-links { display: none; }
-    .hero { padding: 100px 24px 60px; }
-    .stats-row { margin: 0 24px; }
-    section { padding: 64px 24px; }
-    .about-grid { grid-template-columns: 1fr; }
-    .about-monogram { display: none; }
-    .work-grid { grid-template-columns: 1fr 1fr; }
-    .work-item:nth-child(1), .work-item:nth-child(5) { grid-column: span 2; }
-    .services-grid { grid-template-columns: 1fr; }
-    footer { flex-direction: column; gap: 8px; text-align: center; }
-  }
+/* ADD STOCK FORM */
+.form-section { display: flex; flex-direction: column; gap: 12px; }
+
+.form-label {
+font-size: 11px;
+font-weight: 600;
+color: var(–muted);
+text-transform: uppercase;
+letter-spacing: 1.5px;
+margin-bottom: 4px;
+}
+
+.form-group { display: flex; flex-direction: column; gap: 4px; }
+
+input, select, textarea {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 8px;
+color: var(–text);
+font-family: var(–font-body);
+font-size: 14px;
+padding: 10px 14px;
+outline: none;
+transition: border-color 0.2s;
+width: 100%;
+}
+
+input:focus, select:focus, textarea:focus {
+border-color: var(–gold);
+}
+
+select option { background: var(–card); }
+
+.btn {
+padding: 11px 20px;
+border-radius: 8px;
+border: none;
+font-family: var(–font-body);
+font-size: 13px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.2s;
+letter-spacing: 0.5px;
+}
+
+.btn-gold {
+background: var(–gold);
+color: #0d0b08;
+}
+.btn-gold:hover { background: var(–gold-light); transform: translateY(-1px); }
+
+.btn-green {
+background: var(–green);
+color: #fff;
+}
+.btn-green:hover { background: var(–green-light); transform: translateY(-1px); }
+
+.btn-red {
+background: transparent;
+color: var(–red);
+border: 1px solid var(–red);
+}
+.btn-red:hover { background: var(–red); color: #fff; }
+
+.btn-outline {
+background: transparent;
+color: var(–text);
+border: 1px solid var(–border);
+}
+.btn-outline:hover { border-color: var(–gold); color: var(–gold); }
+
+.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+.divider {
+border: none;
+border-top: 1px solid var(–border);
+margin: 8px 0;
+}
+
+/* INVENTORY PANEL */
+.inv-header {
+display: flex;
+align-items: center;
+justify-content: space-between;
+margin-bottom: 12px;
+}
+
+.inv-title {
+font-family: var(–font-display);
+font-size: 15px;
+font-weight: 700;
+color: var(–text);
+}
+
+.inv-count {
+font-size: 11px;
+color: var(–muted);
+background: var(–card);
+padding: 3px 10px;
+border-radius: 20px;
+}
+
+.search-box {
+margin-bottom: 12px;
+}
+
+.fabric-card {
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 10px;
+padding: 14px;
+margin-bottom: 8px;
+transition: border-color 0.2s;
+cursor: pointer;
+position: relative;
+overflow: hidden;
+}
+
+.fabric-card::before {
+content: ‘’;
+position: absolute;
+left: 0; top: 0; bottom: 0;
+width: 3px;
+border-radius: 3px 0 0 3px;
+}
+
+.fabric-card.low::before { background: var(–red); }
+.fabric-card.ok::before { background: var(–green); }
+.fabric-card.medium::before { background: var(–gold); }
+
+.fabric-card:hover { border-color: var(–gold); }
+
+.fabric-top {
+display: flex;
+justify-content: space-between;
+align-items: flex-start;
+margin-bottom: 8px;
+}
+
+.fabric-name {
+font-weight: 600;
+font-size: 14px;
+color: var(–text);
+}
+
+.fabric-type {
+font-size: 11px;
+color: var(–muted);
+margin-top: 2px;
+}
+
+.fabric-meter {
+text-align: right;
+}
+
+.meter-value {
+font-family: var(–font-display);
+font-size: 20px;
+font-weight: 700;
+color: var(–gold);
+line-height: 1;
+}
+
+.meter-label {
+font-size: 10px;
+color: var(–muted);
+text-transform: uppercase;
+letter-spacing: 1px;
+}
+
+.fabric-bar {
+height: 4px;
+background: var(–border);
+border-radius: 2px;
+overflow: hidden;
+margin-bottom: 8px;
+}
+
+.fabric-bar-fill {
+height: 100%;
+border-radius: 2px;
+transition: width 0.5s ease;
+}
+
+.fabric-meta {
+display: flex;
+justify-content: space-between;
+font-size: 11px;
+color: var(–muted);
+}
+
+.low-badge {
+background: rgba(192,57,43,0.15);
+color: var(–red);
+font-size: 10px;
+font-weight: 600;
+padding: 2px 8px;
+border-radius: 4px;
+letter-spacing: 0.5px;
+}
+
+/* MAIN CONTENT */
+.main {
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+
+/* STATS ROW */
+.stats-row {
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+border-bottom: 1px solid var(–border);
+}
+
+.stat-box {
+padding: 20px 24px;
+border-right: 1px solid var(–border);
+}
+
+.stat-box:last-child { border-right: none; }
+
+.stat-label {
+font-size: 11px;
+color: var(–muted);
+text-transform: uppercase;
+letter-spacing: 1.5px;
+margin-bottom: 6px;
+}
+
+.stat-value {
+font-family: var(–font-display);
+font-size: 28px;
+font-weight: 700;
+color: var(–text);
+line-height: 1;
+}
+
+.stat-unit {
+font-size: 13px;
+color: var(–muted);
+margin-left: 4px;
+font-family: var(–font-body);
+}
+
+.stat-sub {
+font-size: 11px;
+color: var(–muted);
+margin-top: 4px;
+}
+
+/* AI CHAT */
+.chat-area {
+flex: 1;
+display: flex;
+flex-direction: column;
+overflow: hidden;
+}
+
+.chat-header {
+padding: 16px 24px;
+border-bottom: 1px solid var(–border);
+display: flex;
+align-items: center;
+gap: 12px;
+}
+
+.ai-avatar {
+width: 36px;
+height: 36px;
+background: linear-gradient(135deg, var(–gold), var(–green));
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 16px;
+flex-shrink: 0;
+}
+
+.chat-title {
+font-weight: 600;
+font-size: 14px;
+color: var(–text);
+}
+
+.chat-subtitle {
+font-size: 11px;
+color: var(–muted);
+}
+
+.chat-online {
+width: 8px;
+height: 8px;
+background: #27ae60;
+border-radius: 50%;
+margin-left: auto;
+box-shadow: 0 0 6px rgba(39,174,96,0.6);
+animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+0%, 100% { opacity: 1; }
+50% { opacity: 0.5; }
+}
+
+.chat-messages {
+flex: 1;
+overflow-y: auto;
+padding: 20px 24px;
+display: flex;
+flex-direction: column;
+gap: 16px;
+}
+
+.chat-messages::-webkit-scrollbar { width: 4px; }
+.chat-messages::-webkit-scrollbar-track { background: transparent; }
+.chat-messages::-webkit-scrollbar-thumb { background: var(–border); border-radius: 2px; }
+
+.msg {
+display: flex;
+gap: 12px;
+max-width: 80%;
+animation: fadeUp 0.3s ease;
+}
+
+@keyframes fadeUp {
+from { opacity: 0; transform: translateY(10px); }
+to { opacity: 1; transform: translateY(0); }
+}
+
+.msg.user {
+align-self: flex-end;
+flex-direction: row-reverse;
+}
+
+.msg-avatar {
+width: 32px;
+height: 32px;
+border-radius: 50%;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 14px;
+flex-shrink: 0;
+}
+
+.msg.ai .msg-avatar { background: linear-gradient(135deg, var(–gold), var(–green)); }
+.msg.user .msg-avatar { background: var(–surface); border: 1px solid var(–border); }
+
+.msg-bubble {
+padding: 12px 16px;
+border-radius: 14px;
+font-size: 14px;
+line-height: 1.6;
+}
+
+.msg.ai .msg-bubble {
+background: var(–card);
+border: 1px solid var(–border);
+border-top-left-radius: 4px;
+color: var(–text);
+}
+
+.msg.user .msg-bubble {
+background: var(–green);
+color: #fff;
+border-top-right-radius: 4px;
+}
+
+.msg-time {
+font-size: 10px;
+color: var(–muted);
+margin-top: 4px;
+text-align: right;
+}
+
+.msg.ai .msg-time { text-align: left; }
+
+/* QUICK QUESTIONS */
+.quick-questions {
+padding: 12px 24px;
+display: flex;
+gap: 8px;
+flex-wrap: wrap;
+border-top: 1px solid var(–border);
+}
+
+.quick-btn {
+background: var(–card);
+border: 1px solid var(–border);
+color: var(–muted);
+padding: 6px 14px;
+border-radius: 20px;
+font-size: 12px;
+cursor: pointer;
+transition: all 0.2s;
+font-family: var(–font-body);
+}
+
+.quick-btn:hover {
+border-color: var(–gold);
+color: var(–gold);
+background: rgba(200,151,58,0.06);
+}
+
+/* CHAT INPUT */
+.chat-input-area {
+padding: 16px 24px;
+border-top: 1px solid var(–border);
+display: flex;
+gap: 10px;
+align-items: center;
+background: var(–bg);
+}
+
+.chat-input {
+flex: 1;
+background: var(–card);
+border: 1px solid var(–border);
+border-radius: 24px;
+color: var(–text);
+font-family: var(–font-body);
+font-size: 14px;
+padding: 12px 18px;
+outline: none;
+transition: border-color 0.2s;
+}
+
+.chat-input:focus { border-color: var(–gold); }
+.chat-input::placeholder { color: var(–muted); }
+
+.send-btn {
+width: 44px;
+height: 44px;
+background: var(–gold);
+border: none;
+border-radius: 50%;
+color: #0d0b08;
+font-size: 18px;
+cursor: pointer;
+display: flex;
+align-items: center;
+justify-content: center;
+transition: all 0.2s;
+flex-shrink: 0;
+}
+
+.send-btn:hover { background: var(–gold-light); transform: scale(1.05); }
+
+/* TYPING INDICATOR */
+.typing {
+display: flex;
+gap: 4px;
+padding: 8px 0;
+}
+
+.typing span {
+width: 6px;
+height: 6px;
+background: var(–muted);
+border-radius: 50%;
+animation: typingAnim 1.2s infinite;
+}
+
+.typing span:nth-child(2) { animation-delay: 0.2s; }
+.typing span:nth-child(3) { animation-delay: 0.4s; }
+
+@keyframes typingAnim {
+0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+30% { transform: translateY(-4px); opacity: 1; }
+}
+
+/* TOAST */
+.toast {
+position: fixed;
+bottom: 24px;
+right: 24px;
+background: var(–green);
+color: #fff;
+padding: 12px 20px;
+border-radius: 10px;
+font-size: 13px;
+font-weight: 500;
+z-index: 999;
+animation: slideIn 0.3s ease;
+display: none;
+}
+
+@keyframes slideIn {
+from { opacity: 0; transform: translateX(20px); }
+to { opacity: 1; transform: translateX(0); }
+}
+
+.section-title {
+font-family: var(–font-display);
+font-size: 13px;
+font-weight: 700;
+color: var(–gold);
+text-transform: uppercase;
+letter-spacing: 2px;
+margin-bottom: 12px;
+margin-top: 4px;
+}
+
+.empty-state {
+text-align: center;
+padding: 40px 20px;
+color: var(–muted);
+font-size: 13px;
+}
+
+.empty-state .emoji { font-size: 32px; margin-bottom: 10px; }
+
+/* SELL FORM */
+#sell-panel { display: none; }
+#add-panel { display: block; }
 </style>
+
 </head>
 <body>
 
-<div class="cursor" id="cursor"></div>
-<div class="cursor-ring" id="cursorRing"></div>
+<header>
+  <div class="logo">
+    <div class="logo-icon">🧵</div>
+    <div>
+      <div class="logo-text">Kapda AI</div>
+      <div class="logo-sub">Textile Stock Manager</div>
+    </div>
+  </div>
+  <div class="header-badge">✦ AI Powered</div>
+</header>
 
-<!-- Modal -->
-<div class="modal-overlay" id="modal">
-  <div class="modal-box">
-    <button class="modal-close" onclick="closeModal()">✕ Close</button>
-    <iframe class="modal-embed" id="modalFrame" src="" allowfullscreen></iframe>
+<div class="app">
+
+  <!-- SIDEBAR -->
+
+  <div class="sidebar">
+    <div class="sidebar-tabs">
+      <div class="tab active" onclick="switchTab('add')">+ Add Stock</div>
+      <div class="tab" onclick="switchTab('sell')">− Sell</div>
+      <div class="tab" onclick="switchTab('list')">📦 Inventory</div>
+    </div>
+
+```
+<!-- ADD STOCK PANEL -->
+<div class="sidebar-content" id="add-panel">
+  <div class="section-title">Add New Stock</div>
+  <div class="form-section">
+    <div class="form-group">
+      <div class="form-label">Fabric Name</div>
+      <input type="text" id="fabric-name" placeholder="e.g. Red Georgette" />
+    </div>
+    <div class="row-2">
+      <div class="form-group">
+        <div class="form-label">Type / Category</div>
+        <select id="fabric-type">
+          <option value="Georgette">Georgette</option>
+          <option value="Chiffon">Chiffon</option>
+          <option value="Silk">Silk</option>
+          <option value="Cotton">Cotton</option>
+          <option value="Linen">Linen</option>
+          <option value="Velvet">Velvet</option>
+          <option value="Satin">Satin</option>
+          <option value="Net">Net</option>
+          <option value="Rayon">Rayon</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <div class="form-label">Color</div>
+        <input type="text" id="fabric-color" placeholder="e.g. Red" />
+      </div>
+    </div>
+    <div class="row-2">
+      <div class="form-group">
+        <div class="form-label">Meters</div>
+        <input type="number" id="fabric-meters" placeholder="e.g. 200" min="0" />
+      </div>
+      <div class="form-group">
+        <div class="form-label">Low Alert (m)</div>
+        <input type="number" id="fabric-threshold" placeholder="e.g. 50" min="0" />
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Rate per Meter (₹)</div>
+      <input type="number" id="fabric-rate" placeholder="e.g. 120" min="0" />
+    </div>
+    <div class="form-group">
+      <div class="form-label">Supplier / Lot Note</div>
+      <input type="text" id="fabric-supplier" placeholder="e.g. Rajan Textiles, Lot #12" />
+    </div>
+    <button class="btn btn-gold" onclick="addStock()" style="width:100%; margin-top:4px;">
+      ✦ Add to Inventory
+    </button>
   </div>
 </div>
 
-<nav>
-  <a href="#" class="nav-logo">Rishi Jain</a>
-  <ul class="nav-links">
-    <li><a href="#work">Work</a></li>
-    <li><a href="#about">About</a></li>
-    <li><a href="#services">Services</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+<!-- SELL PANEL -->
+<div class="sidebar-content" id="sell-panel">
+  <div class="section-title">Record Sale</div>
+  <div class="form-section">
+    <div class="form-group">
+      <div class="form-label">Select Fabric</div>
+      <select id="sell-fabric"></select>
+    </div>
+    <div class="row-2">
+      <div class="form-group">
+        <div class="form-label">Meters Sold</div>
+        <input type="number" id="sell-meters" placeholder="e.g. 30" min="0" />
+      </div>
+      <div class="form-group">
+        <div class="form-label">Rate (₹/m)</div>
+        <input type="number" id="sell-rate" placeholder="auto" min="0" />
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="form-label">Customer Name</div>
+      <input type="text" id="sell-customer" placeholder="e.g. Rajesh Bhai" />
+    </div>
+    <div class="form-group">
+      <div class="form-label">Note</div>
+      <input type="text" id="sell-note" placeholder="Optional note" />
+    </div>
+    <button class="btn btn-red" onclick="recordSale()" style="width:100%; margin-top:4px;">
+      Record Sale
+    </button>
+  </div>
 
-<section class="hero">
-  <span class="hero-tag">Creative Editor</span>
-  <h1 class="hero-title">
-    Rishi<br><em>Jain.</em>
-  </h1>
-  <div class="hero-bottom">
-    <p class="hero-desc">
-      Self-taught creative editor with 3+ years of experience. I've worked in professional studios and freelanced across multiple niches — crafting reels, ad films, and short-form content that actually performs.
-    </p>
-    <a href="#work" class="hero-cta">View My Work →</a>
-  </div>
-</section>
-
-<div class="stats-row">
-  <div class="stat-item">
-    <span class="stat-num">3+</span>
-    <span class="stat-label">Years Experience</span>
-  </div>
-  <div class="stat-item">
-    <span class="stat-num">50+</span>
-    <span class="stat-label">Videos Edited</span>
-  </div>
-  <div class="stat-item">
-    <span class="stat-num">100%</span>
-    <span class="stat-label">Self-Taught</span>
-  </div>
-  <div class="stat-item">
-    <span class="stat-num">∞</span>
-    <span class="stat-label">Creative Drive</span>
+  <hr class="divider" style="margin-top:20px;" />
+  <div class="section-title" style="margin-top:16px;">Recent Sales</div>
+  <div id="sales-log">
+    <div class="empty-state">
+      <div class="emoji">📋</div>
+      No sales recorded yet
+    </div>
   </div>
 </div>
 
-<!-- Work — replace YOUR_LINK_X with your YouTube embed URL or Google Drive embed URL -->
-<section id="work">
-  <div class="section-header reveal">
-    <span class="section-num">01</span>
-    <h2 class="section-title">Selected Work</h2>
-    <div class="section-line"></div>
+<!-- INVENTORY LIST PANEL -->
+<div class="sidebar-content" id="list-panel" style="display:none;">
+  <div class="inv-header">
+    <div class="inv-title">All Fabrics</div>
+    <div class="inv-count" id="inv-count">0 items</div>
   </div>
-  <div class="work-grid reveal">
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_1')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 01 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_2')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 02 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_3')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 03 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_4')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 04 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_5')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 05 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_6')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 06 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_7')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 07 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_8')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 08 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_9')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 09 →</span></div></div>
-    </a>
-    <a class="work-item" href="#" onclick="openVideo(event,'YOUR_LINK_10')">
-      <div class="work-thumb"><div class="work-play-btn">▶</div></div>
-      <div class="work-overlay"><div class="work-overlay-inner"><p class="work-watch">Watch</p><span class="work-watch-link">Video 10 →</span></div></div>
-    </a>
+  <div class="search-box">
+    <input type="text" id="inv-search" placeholder="🔍 Search fabric..." oninput="renderInventory()" />
   </div>
-</section>
+  <div id="inventory-list">
+    <div class="empty-state">
+      <div class="emoji">📦</div>
+      Add fabrics to see them here
+    </div>
+  </div>
+</div>
+```
 
-<section id="about" class="about-section">
-  <div class="section-header reveal">
-    <span class="section-num">02</span>
-    <h2 class="section-title">About</h2>
-    <div class="section-line"></div>
   </div>
-  <div class="about-grid">
-    <div class="about-monogram reveal"><div class="about-monogram-inner">RJ</div></div>
-    <div class="reveal">
-      <h3 class="about-heading">I edit with<br>intention,<br><em>not just software</em></h3>
-      <p class="about-body">
-        I'm Rishi — a self-taught creative editor with 3+ years of hands-on experience across professional studios and freelance projects. I've edited everything from high-energy reels to cinematic ad films across multiple industries.<br><br>
-        I didn't learn this from a course. I learned it by doing it, breaking it, and doing it better — which means every edit I deliver comes from real creative instinct, not a template.
-      </p>
-      <div class="skills-list">
-        <span class="skill-tag">Premiere Pro</span>
-        <span class="skill-tag">After Effects</span>
-        <span class="skill-tag">Motion Graphics</span>
-        <span class="skill-tag">Reels & Short-form</span>
-        <span class="skill-tag">Ad Film Editing</span>
-        <span class="skill-tag">Colour Grading</span>
-        <span class="skill-tag">CapCut</span>
+
+  <!-- MAIN -->
+
+  <div class="main">
+    <!-- STATS -->
+    <div class="stats-row">
+      <div class="stat-box">
+        <div class="stat-label">Total Fabrics</div>
+        <div class="stat-value" id="stat-fabrics">0 <span class="stat-unit">items</span></div>
+        <div class="stat-sub">in inventory</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Total Stock</div>
+        <div class="stat-value" id="stat-meters">0 <span class="stat-unit">m</span></div>
+        <div class="stat-sub">across all fabrics</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Low Stock Alerts</div>
+        <div class="stat-value" id="stat-low" style="color: var(--red);">0 <span class="stat-unit" style="color:var(--muted);">items</span></div>
+        <div class="stat-sub">need reorder</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Stock Value</div>
+        <div class="stat-value" id="stat-value">₹0</div>
+        <div class="stat-sub">total inventory</div>
+      </div>
+    </div>
+
+```
+<!-- AI CHAT -->
+<div class="chat-area">
+  <div class="chat-header">
+    <div class="ai-avatar">🤖</div>
+    <div>
+      <div class="chat-title">Kapda AI Assistant</div>
+      <div class="chat-subtitle">Ask anything about your stock in Hindi or English</div>
+    </div>
+    <div class="chat-online"></div>
+  </div>
+
+  <div class="chat-messages" id="chat-messages">
+    <div class="msg ai">
+      <div class="msg-avatar">🤖</div>
+      <div>
+        <div class="msg-bubble">
+          Namaste! 🙏 Main aapka textile stock manager hoon. Aap mujhse stock ke baare mein kuch bhi puch sakte ho — <strong>"kitna bacha hai?", "low stock kya hai?", "aaj kitna sell hua?"</strong> — sab pooch sakte ho! Add Stock karke shuru karo. 😊
+        </div>
+        <div class="msg-time">Just now</div>
       </div>
     </div>
   </div>
-</section>
 
-<section id="services">
-  <div class="section-header reveal">
-    <span class="section-num">03</span>
-    <h2 class="section-title">What I Do</h2>
-    <div class="section-line"></div>
+  <div class="quick-questions">
+    <button class="quick-btn" onclick="quickAsk('Kitna total stock hai?')">📦 Total stock?</button>
+    <button class="quick-btn" onclick="quickAsk('Kaun sa fabric low stock mein hai?')">⚠️ Low stock?</button>
+    <button class="quick-btn" onclick="quickAsk('Sabse zyada stock kiska hai?')">🏆 Most stock?</button>
+    <button class="quick-btn" onclick="quickAsk('Total inventory value kya hai?')">💰 Stock value?</button>
+    <button class="quick-btn" onclick="quickAsk('Aaj kitni sale hui?')">📊 Today sales?</button>
   </div>
-  <div class="services-grid reveal">
-    <div class="service-card">
-      <span class="service-num">01</span>
-      <p class="service-name">Short-form Reels</p>
-      <p class="service-desc">Fast, punchy, scroll-stopping reels for Instagram and YouTube Shorts. Built to drive views, saves, and engagement.</p>
-    </div>
-    <div class="service-card">
-      <span class="service-num">02</span>
-      <p class="service-name">Ad Film Editing</p>
-      <p class="service-desc">Brand ads that make your product feel premium before anyone touches it. Colour, motion, and pacing working together.</p>
-    </div>
-    <div class="service-card">
-      <span class="service-num">03</span>
-      <p class="service-name">Motion Graphics</p>
-      <p class="service-desc">Transitions, text animations, and graphic overlays that give your content a clean, professional identity on screen.</p>
-    </div>
-  </div>
-</section>
 
-<section id="contact" class="contact-section">
-  <p class="contact-pre">Let's work together</p>
-  <h2 class="contact-title">Got a project?<br>Let's <em>make it happen.</em></h2>
-  <div class="contact-links">
-    <a href="https://wa.me/919328299848" class="contact-link" target="_blank">WhatsApp</a>
-    <a href="mailto:hello.niori@gmail.com" class="contact-link">Email</a>
-    <a href="https://instagram.com/niori.co" class="contact-link" target="_blank">Instagram</a>
+  <div class="chat-input-area">
+    <input class="chat-input" id="chat-input" placeholder="Kuch bhi poochho... e.g. 'Red georgette kitna bacha hai?'" onkeydown="if(event.key==='Enter') sendMessage()" />
+    <button class="send-btn" onclick="sendMessage()">➤</button>
   </div>
-</section>
+</div>
+```
 
-<footer>
-  <span>© 2025 Rishi Jain</span>
-  <span>Creative Editor</span>
-</footer>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
 
 <script>
-  const cursor = document.getElementById('cursor');
-  const ring = document.getElementById('cursorRing');
-  document.addEventListener('mousemove', e => {
-    cursor.style.left = e.clientX + 'px';
-    cursor.style.top = e.clientY + 'px';
-    setTimeout(() => { ring.style.left = e.clientX + 'px'; ring.style.top = e.clientY + 'px'; }, 80);
+// ─── STATE ───────────────────────────────────────────────────────────────
+let inventory = JSON.parse(localStorage.getItem('kapda_inventory') || '[]');
+let sales = JSON.parse(localStorage.getItem('kapda_sales') || '[]');
+
+// SEED DATA if empty
+if (inventory.length === 0) {
+  inventory = [
+    { id: 1, name: 'Red Georgette', type: 'Georgette', color: 'Red', meters: 180, threshold: 50, rate: 120, supplier: 'Rajan Textiles', addedDate: new Date().toISOString() },
+    { id: 2, name: 'Blue Chiffon', type: 'Chiffon', color: 'Blue', meters: 45, threshold: 60, rate: 95, supplier: 'Mehta Fabrics', addedDate: new Date().toISOString() },
+    { id: 3, name: 'Golden Silk', type: 'Silk', color: 'Golden', meters: 220, threshold: 30, rate: 340, supplier: 'Surat Silk House', addedDate: new Date().toISOString() },
+    { id: 4, name: 'White Cotton', type: 'Cotton', color: 'White', meters: 12, threshold: 40, rate: 55, supplier: 'Gujarat Cotton Co.', addedDate: new Date().toISOString() },
+    { id: 5, name: 'Black Velvet', type: 'Velvet', color: 'Black', meters: 88, threshold: 25, rate: 280, supplier: 'Royal Fabrics', addedDate: new Date().toISOString() },
+  ];
+  saveData();
+}
+
+function saveData() {
+  localStorage.setItem('kapda_inventory', JSON.stringify(inventory));
+  localStorage.setItem('kapda_sales', JSON.stringify(sales));
+}
+
+// ─── UI TABS ─────────────────────────────────────────────────────────────
+function switchTab(tab) {
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', ['add','sell','list'][i] === tab);
   });
+  document.getElementById('add-panel').style.display = tab === 'add' ? 'block' : 'none';
+  document.getElementById('sell-panel').style.display = tab === 'sell' ? 'block' : 'none';
+  document.getElementById('list-panel').style.display = tab === 'list' ? 'block' : 'none';
+  if (tab === 'sell') populateSellDropdown();
+  if (tab === 'list') renderInventory();
+}
 
-  function openVideo(e, src) {
-    e.preventDefault();
-    if (!src || src.startsWith('YOUR_')) return;
-    document.getElementById('modalFrame').src = src;
-    document.getElementById('modal').classList.add('active');
-    document.body.style.overflow = 'hidden';
-  }
-  function closeModal() {
-    document.getElementById('modal').classList.remove('active');
-    document.getElementById('modalFrame').src = '';
-    document.body.style.overflow = '';
-  }
-  document.getElementById('modal').addEventListener('click', function(e) { if (e.target === this) closeModal(); });
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+// ─── ADD STOCK ────────────────────────────────────────────────────────────
+function addStock() {
+  const name = document.getElementById('fabric-name').value.trim();
+  const type = document.getElementById('fabric-type').value;
+  const color = document.getElementById('fabric-color').value.trim();
+  const meters = parseFloat(document.getElementById('fabric-meters').value);
+  const threshold = parseFloat(document.getElementById('fabric-threshold').value) || 50;
+  const rate = parseFloat(document.getElementById('fabric-rate').value) || 0;
+  const supplier = document.getElementById('fabric-supplier').value.trim();
 
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver(entries => {
-    entries.forEach((entry, i) => { if (entry.isIntersecting) setTimeout(() => entry.target.classList.add('visible'), i * 100); });
-  }, { threshold: 0.08 });
-  reveals.forEach(el => observer.observe(el));
+  if (!name || !meters || meters <= 0) {
+    showToast('⚠️ Fabric name aur meters daalo!', '#c0392b');
+    return;
+  }
+
+  // Check if same fabric exists
+  const existing = inventory.find(f => f.name.toLowerCase() === name.toLowerCase());
+  if (existing) {
+    existing.meters += meters;
+    showToast(`✓ ${name} mein ${meters}m add hua! Total: ${existing.meters}m`);
+  } else {
+    inventory.push({
+      id: Date.now(),
+      name, type, color, meters, threshold, rate, supplier,
+      addedDate: new Date().toISOString()
+    });
+    showToast(`✓ ${name} inventory mein add hua!`);
+  }
+
+  saveData();
+  updateStats();
+  clearForm();
+}
+
+function clearForm() {
+  ['fabric-name','fabric-color','fabric-meters','fabric-threshold','fabric-rate','fabric-supplier'].forEach(id => {
+    document.getElementById(id).value = '';
+  });
+}
+
+// ─── SELL ─────────────────────────────────────────────────────────────────
+function populateSellDropdown() {
+  const sel = document.getElementById('sell-fabric');
+  sel.innerHTML = inventory.length === 0
+    ? '<option>Pehle stock add karo</option>'
+    : inventory.map(f => `<option value="${f.id}">${f.name} (${f.meters}m available)</option>`).join('');
+}
+
+function recordSale() {
+  const fabricId = parseInt(document.getElementById('sell-fabric').value);
+  const meters = parseFloat(document.getElementById('sell-meters').value);
+  const customer = document.getElementById('sell-customer').value.trim();
+  const note = document.getElementById('sell-note').value.trim();
+
+  const fabric = inventory.find(f => f.id === fabricId);
+  if (!fabric) { showToast('Fabric select karo', '#c0392b'); return; }
+  if (!meters || meters <= 0) { showToast('Meters daalo', '#c0392b'); return; }
+  if (meters > fabric.meters) { showToast(`⚠️ Sirf ${fabric.meters}m available hai!`, '#c0392b'); return; }
+
+  const saleRate = parseFloat(document.getElementById('sell-rate').value) || fabric.rate;
+  fabric.meters -= meters;
+
+  const sale = {
+    id: Date.now(),
+    fabricId, fabricName: fabric.name,
+    meters, rate: saleRate,
+    total: meters * saleRate,
+    customer: customer || 'Walk-in',
+    note,
+    date: new Date().toISOString()
+  };
+
+  sales.unshift(sale);
+  saveData();
+  updateStats();
+  populateSellDropdown();
+  renderSalesLog();
+
+  showToast(`✓ ${meters}m ${fabric.name} sold to ${sale.customer}!`);
+  document.getElementById('sell-meters').value = '';
+  document.getElementById('sell-customer').value = '';
+  document.getElementById('sell-note').value = '';
+
+  if (fabric.meters < fabric.threshold) {
+    setTimeout(() => addAIMessage(`⚠️ Alert: **${fabric.name}** ka stock low hai — sirf **${fabric.meters}m** bacha hai. Reorder karne ka waqt aa gaya hai!`), 800);
+  }
+}
+
+function renderSalesLog() {
+  const container = document.getElementById('sales-log');
+  if (sales.length === 0) {
+    container.innerHTML = '<div class="empty-state"><div class="emoji">📋</div>No sales yet</div>';
+    return;
+  }
+  container.innerHTML = sales.slice(0, 8).map(s => `
+    <div class="fabric-card ok" style="margin-bottom:8px; cursor:default;">
+      <div class="fabric-top">
+        <div>
+          <div class="fabric-name">${s.fabricName}</div>
+          <div class="fabric-type">${s.customer} • ${new Date(s.date).toLocaleDateString('en-IN')}</div>
+        </div>
+        <div class="fabric-meter">
+          <div class="meter-value" style="color:var(--green-light)">${s.meters}m</div>
+          <div class="meter-label">₹${s.total.toLocaleString()}</div>
+        </div>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ─── INVENTORY LIST ───────────────────────────────────────────────────────
+function renderInventory() {
+  const search = (document.getElementById('inv-search')?.value || '').toLowerCase();
+  const filtered = inventory.filter(f =>
+    f.name.toLowerCase().includes(search) ||
+    f.type.toLowerCase().includes(search) ||
+    f.color.toLowerCase().includes(search)
+  );
+
+  document.getElementById('inv-count').textContent = `${filtered.length} items`;
+
+  if (filtered.length === 0) {
+    document.getElementById('inventory-list').innerHTML = '<div class="empty-state"><div class="emoji">📦</div>Koi fabric nahi mila</div>';
+    return;
+  }
+
+  document.getElementById('inventory-list').innerHTML = filtered.map(f => {
+    const pct = Math.min(100, (f.meters / (f.threshold * 3)) * 100);
+    const status = f.meters <= f.threshold ? 'low' : f.meters <= f.threshold * 1.5 ? 'medium' : 'ok';
+    const barColor = status === 'low' ? 'var(--red)' : status === 'medium' ? 'var(--gold)' : 'var(--green)';
+    return `
+      <div class="fabric-card ${status}">
+        <div class="fabric-top">
+          <div>
+            <div class="fabric-name">${f.name}</div>
+            <div class="fabric-type">${f.type} • ${f.color}</div>
+          </div>
+          <div class="fabric-meter">
+            <div class="meter-value">${f.meters}</div>
+            <div class="meter-label">meters</div>
+          </div>
+        </div>
+        <div class="fabric-bar">
+          <div class="fabric-bar-fill" style="width:${pct}%; background:${barColor}"></div>
+        </div>
+        <div class="fabric-meta">
+          <span>Alert at ${f.threshold}m ${status === 'low' ? '<span class="low-badge">LOW</span>' : ''}</span>
+          <span>₹${f.rate}/m</span>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+// ─── STATS ────────────────────────────────────────────────────────────────
+function updateStats() {
+  const total = inventory.reduce((a, f) => a + f.meters, 0);
+  const lowCount = inventory.filter(f => f.meters < f.threshold).length;
+  const value = inventory.reduce((a, f) => a + (f.meters * f.rate), 0);
+
+  document.getElementById('stat-fabrics').innerHTML = `${inventory.length} <span class="stat-unit">items</span>`;
+  document.getElementById('stat-meters').innerHTML = `${total.toLocaleString()} <span class="stat-unit">m</span>`;
+  document.getElementById('stat-low').innerHTML = `${lowCount} <span class="stat-unit" style="color:var(--muted)">items</span>`;
+  document.getElementById('stat-value').textContent = `₹${value.toLocaleString()}`;
+}
+
+// ─── AI CHAT ──────────────────────────────────────────────────────────────
+async function sendMessage() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+
+  addUserMessage(text);
+  input.value = '';
+  showTyping();
+
+  // Build context
+  const stockContext = inventory.map(f =>
+    `${f.name} (${f.type}, ${f.color}): ${f.meters}m available, threshold ${f.threshold}m, rate ₹${f.rate}/m`
+  ).join('\n');
+
+  const todaySales = sales.filter(s => {
+    const today = new Date(); const sd = new Date(s.date);
+    return sd.toDateString() === today.toDateString();
+  });
+  const salesContext = todaySales.length
+    ? todaySales.map(s => `${s.fabricName}: ${s.meters}m sold to ${s.customer} for ₹${s.total}`).join('\n')
+    : 'No sales today';
+
+  const prompt = `You are a friendly textile stock management AI assistant for an Indian textile shop in Surat. 
+Answer ONLY based on the inventory data below. Reply in Hinglish (mix of Hindi and English, like how people in Surat talk). Keep answers short, friendly and use emojis.
+
+Current Inventory:
+${stockContext || 'No items in inventory yet'}
+
+Today's Sales:
+${salesContext}
+
+Total Items: ${inventory.length}
+Total Stock: ${inventory.reduce((a,f) => a+f.meters, 0)}m
+Low Stock Items: ${inventory.filter(f => f.meters < f.threshold).map(f => f.name).join(', ') || 'None'}
+Total Value: ₹${inventory.reduce((a,f) => a+(f.meters*f.rate), 0).toLocaleString()}
+
+User question: ${text}
+
+Answer concisely in Hinglish. Use bold for numbers/fabric names. If they ask about a specific fabric, give exact numbers.`;
+
+  try {
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-sonnet-4-20250514",
+        max_tokens: 1000,
+        messages: [{ role: "user", content: prompt }]
+      })
+    });
+
+    const data = await response.json();
+    const reply = data.content?.[0]?.text || "Maafi chahta hoon, kuch problem aa gayi. Dobara try karo.";
+    hideTyping();
+    addAIMessage(reply);
+  } catch (e) {
+    hideTyping();
+    addAIMessage("Network issue aa gayi hai. Please dobara try karo. 🙏");
+  }
+}
+
+function quickAsk(q) {
+  document.getElementById('chat-input').value = q;
+  sendMessage();
+}
+
+function addUserMessage(text) {
+  const now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  const el = document.createElement('div');
+  el.className = 'msg user';
+  el.innerHTML = `
+    <div class="msg-avatar">👤</div>
+    <div>
+      <div class="msg-bubble">${escapeHtml(text)}</div>
+      <div class="msg-time">${now}</div>
+    </div>`;
+  document.getElementById('chat-messages').appendChild(el);
+  scrollChat();
+}
+
+function addAIMessage(text) {
+  const now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
+  const el = document.createElement('div');
+  el.className = 'msg ai';
+  el.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div>
+      <div class="msg-bubble">${text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
+      <div class="msg-time">${now}</div>
+    </div>`;
+  document.getElementById('chat-messages').appendChild(el);
+  scrollChat();
+}
+
+let typingEl = null;
+function showTyping() {
+  typingEl = document.createElement('div');
+  typingEl.className = 'msg ai';
+  typingEl.id = 'typing-msg';
+  typingEl.innerHTML = `
+    <div class="msg-avatar">🤖</div>
+    <div class="msg-bubble">
+      <div class="typing"><span></span><span></span><span></span></div>
+    </div>`;
+  document.getElementById('chat-messages').appendChild(typingEl);
+  scrollChat();
+}
+
+function hideTyping() {
+  document.getElementById('typing-msg')?.remove();
+}
+
+function scrollChat() {
+  const c = document.getElementById('chat-messages');
+  c.scrollTop = c.scrollHeight;
+}
+
+function escapeHtml(text) {
+  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────
+function showToast(msg, color = 'var(--green)') {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.style.background = color;
+  t.style.display = 'block';
+  setTimeout(() => { t.style.display = 'none'; }, 3000);
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────
+updateStats();
 </script>
+
 </body>
 </html>
