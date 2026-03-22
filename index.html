@@ -1211,7 +1211,7 @@ select option { background: #1d1b18; }
 // ═══════════════════════════════════════════
 // STATE — all zero, fresh start
 // ═══════════════════════════════════════════
-const API_KEY = 'AIzaSyAy9eHLzoZLmbhMTfXydnib4hDSOArgoJM'; // ← aistudio.google.com se apna key yahan daalo
+const API_KEY = 'gen-lang-client-0823999127'; // ← aistudio.google.com se apna key yahan daalo
 
 let inv   = JSON.parse(localStorage.getItem('ss2_inv')   || '[]');
 let sales = JSON.parse(localStorage.getItem('ss2_sales') || '[]');
@@ -1571,9 +1571,9 @@ async function sendAI() {
   inp.value = '';
   addUserMsg(q); showTyping();
 
-  if (!API_KEY || API_KEY === 'PASTE_YOUR_GEMINI_KEY_HERE') {
+  if (!API_KEY || API_KEY === 'gen-lang-client-0823999127') {
     removeTyping();
-    addAIMsg('API key nahi hai! File mein <strong>PASTE_YOUR_GEMINI_KEY_HERE</strong> ki jagah apni Gemini key daalo. aistudio.google.com se milegi. 🔑');
+    addAIMsg('API key nahi hai! File mein <strong>gen-lang-client-0823999127</strong> ki jagah apni Gemini key daalo. aistudio.google.com se milegi. 🔑');
     return;
   }
 
@@ -1595,7 +1595,7 @@ User question: ${q}`;
 
   try {
     const res = await fetch(
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + API_KEY,
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=' + API_KEY,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
