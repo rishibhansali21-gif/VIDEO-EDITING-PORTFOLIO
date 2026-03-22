@@ -1,1211 +1,1204 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Kapda AI — Textile Stock Manager</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<title>StockSaathi — Textile Stock Manager</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-  :root {
-    --bg: #0d0b08;
-    --surface: #161410;
-    --card: #1e1b16;
-    --border: #2e2920;
-    --gold: #c8973a;
-    --gold-light: #e5b96a;
-    --green: #2d6a3f;
-    --green-light: #3d8f55;
-    --text: #f0ead8;
-    --muted: #8a7d65;
-    --red: #c0392b;
-    --font-display: 'Playfair Display', serif;
-    --font-body: 'DM Sans', sans-serif;
-  }
+* { margin: 0; padding: 0; box-sizing: border-box; }
 
-- { margin: 0; padding: 0; box-sizing: border-box; }
+:root {
+  --bg: #f7f5f0;
+  --white: #ffffff;
+  --border: #e8e3db;
+  --border2: #d5cec4;
+  --text: #1a1815;
+  --muted: #8c8479;
+  --green: #1e5c35;
+  --green-light: #e8f3ec;
+  --green-mid: #2d7a47;
+  --amber: #b5620e;
+  --amber-light: #fef3e8;
+  --red: #c0392b;
+  --red-light: #fdecea;
+  --font-display: 'Instrument Serif', serif;
+  --font-body: 'Plus Jakarta Sans', sans-serif;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+}
 
 body {
-background: var(–bg);
-color: var(–text);
-font-family: var(–font-body);
-min-height: 100vh;
-display: flex;
-flex-direction: column;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+  font-size: 14px;
 }
 
 /* HEADER */
 header {
-padding: 20px 32px;
-border-bottom: 1px solid var(–border);
-display: flex;
-align-items: center;
-justify-content: space-between;
-background: rgba(13,11,8,0.9);
-backdrop-filter: blur(12px);
-position: sticky;
-top: 0;
-z-index: 100;
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: var(--shadow);
 }
 
-.logo {
-display: flex;
-align-items: center;
-gap: 12px;
+.logo { display: flex; align-items: center; gap: 10px; }
+
+.logo-mark {
+  width: 34px; height: 34px;
+  background: var(--green);
+  border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-style: italic;
 }
 
-.logo-icon {
-width: 38px;
-height: 38px;
-background: linear-gradient(135deg, var(–gold), var(–green));
-border-radius: 10px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 18px;
+.logo-name {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--text);
+  letter-spacing: -0.3px;
 }
 
-.logo-text {
-font-family: var(–font-display);
-font-size: 22px;
-font-weight: 700;
-color: var(–gold);
-letter-spacing: 0.5px;
+.logo-tag {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+  margin-left: 2px;
 }
 
-.logo-sub {
-font-size: 11px;
-color: var(–muted);
-letter-spacing: 2px;
-text-transform: uppercase;
+.header-right { display: flex; align-items: center; gap: 10px; }
+
+.badge {
+  display: inline-flex; align-items: center; gap: 5px;
+  background: var(--green-light);
+  color: var(--green);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
 }
 
-.header-badge {
-background: var(–green);
-color: #fff;
-font-size: 11px;
-font-weight: 600;
-padding: 4px 12px;
-border-radius: 20px;
-letter-spacing: 0.5px;
+.badge::before {
+  content: '';
+  width: 6px; height: 6px;
+  background: var(--green-mid);
+  border-radius: 50%;
 }
 
 /* LAYOUT */
-.app {
-display: grid;
-grid-template-columns: 320px 1fr;
-flex: 1;
-height: calc(100vh - 65px);
+.layout {
+  display: grid;
+  grid-template-columns: 300px 1fr 340px;
+  height: calc(100vh - 58px);
+  gap: 0;
 }
 
-/* SIDEBAR */
-.sidebar {
-border-right: 1px solid var(–border);
-display: flex;
-flex-direction: column;
-overflow: hidden;
+/* PANELS */
+.panel {
+  background: var(--white);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.sidebar-tabs {
-display: flex;
-border-bottom: 1px solid var(–border);
+.panel-right {
+  border-right: none;
+  border-left: 1px solid var(--border);
+}
+
+.panel-head {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.panel-title {
+  font-family: var(--font-display);
+  font-size: 17px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.panel-sub { font-size: 12px; color: var(--muted); }
+
+.panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.panel-body::-webkit-scrollbar { width: 3px; }
+.panel-body::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+/* TABS */
+.tabs {
+  display: flex;
+  padding: 0 16px;
+  gap: 2px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
 }
 
 .tab {
-flex: 1;
-padding: 14px;
-text-align: center;
-font-size: 12px;
-font-weight: 600;
-letter-spacing: 1px;
-text-transform: uppercase;
-color: var(–muted);
-cursor: pointer;
-transition: all 0.2s;
-border-bottom: 2px solid transparent;
+  padding: 12px 14px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+  letter-spacing: 0.2px;
+  white-space: nowrap;
 }
 
-.tab.active {
-color: var(–gold);
-border-bottom-color: var(–gold);
-background: rgba(200,151,58,0.06);
-}
+.tab.active { color: var(--green); border-bottom-color: var(--green); }
+.tab:hover:not(.active) { color: var(--text); }
 
-.tab:hover:not(.active) { color: var(–text); }
-
-.sidebar-content {
-flex: 1;
-overflow-y: auto;
-padding: 16px;
-}
-
-.sidebar-content::-webkit-scrollbar { width: 4px; }
-.sidebar-content::-webkit-scrollbar-track { background: transparent; }
-.sidebar-content::-webkit-scrollbar-thumb { background: var(–border); border-radius: 2px; }
-
-/* ADD STOCK FORM */
-.form-section { display: flex; flex-direction: column; gap: 12px; }
+/* FORM */
+.form-group { margin-bottom: 12px; }
 
 .form-label {
-font-size: 11px;
-font-weight: 600;
-color: var(–muted);
-text-transform: uppercase;
-letter-spacing: 1.5px;
-margin-bottom: 4px;
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 5px;
 }
 
-.form-group { display: flex; flex-direction: column; gap: 4px; }
-
 input, select, textarea {
-background: var(–card);
-border: 1px solid var(–border);
-border-radius: 8px;
-color: var(–text);
-font-family: var(–font-body);
-font-size: 14px;
-padding: 10px 14px;
-outline: none;
-transition: border-color 0.2s;
-width: 100%;
+  width: 100%;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: var(--font-body);
+  font-size: 13px;
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
 }
 
 input:focus, select:focus, textarea:focus {
-border-color: var(–gold);
+  border-color: var(--green);
+  box-shadow: 0 0 0 3px rgba(30,92,53,0.08);
+  background: white;
 }
 
-select option { background: var(–card); }
+select option { background: white; }
+
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 
 .btn {
-padding: 11px 20px;
-border-radius: 8px;
-border: none;
-font-family: var(–font-body);
-font-size: 13px;
-font-weight: 600;
-cursor: pointer;
-transition: all 0.2s;
-letter-spacing: 0.5px;
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: 8px;
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.2px;
 }
 
-.btn-gold {
-background: var(–gold);
-color: #0d0b08;
-}
-.btn-gold:hover { background: var(–gold-light); transform: translateY(-1px); }
+.btn-green { background: var(--green); color: white; }
+.btn-green:hover { background: var(--green-mid); transform: translateY(-1px); box-shadow: var(--shadow-md); }
 
-.btn-green {
-background: var(–green);
-color: #fff;
-}
-.btn-green:hover { background: var(–green-light); transform: translateY(-1px); }
-
-.btn-red {
-background: transparent;
-color: var(–red);
-border: 1px solid var(–red);
-}
-.btn-red:hover { background: var(–red); color: #fff; }
+.btn-amber { background: var(--amber); color: white; }
+.btn-amber:hover { background: #d4741a; transform: translateY(-1px); box-shadow: var(--shadow-md); }
 
 .btn-outline {
-background: transparent;
-color: var(–text);
-border: 1px solid var(–border);
+  background: transparent;
+  color: var(--red);
+  border: 1px solid #e8c5c2;
 }
-.btn-outline:hover { border-color: var(–gold); color: var(–gold); }
+.btn-outline:hover { background: var(--red-light); }
 
-.row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-.divider {
-border: none;
-border-top: 1px solid var(–border);
-margin: 8px 0;
-}
-
-/* INVENTORY PANEL */
-.inv-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-margin-bottom: 12px;
+/* STATS */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  border-bottom: 1px solid var(--border);
 }
 
-.inv-title {
-font-family: var(–font-display);
-font-size: 15px;
-font-weight: 700;
-color: var(–text);
+.stat-cell {
+  padding: 18px 20px;
+  border-right: 1px solid var(--border);
+  transition: background 0.15s;
 }
 
-.inv-count {
-font-size: 11px;
-color: var(–muted);
-background: var(–card);
-padding: 3px 10px;
-border-radius: 20px;
-}
-
-.search-box {
-margin-bottom: 12px;
-}
-
-.fabric-card {
-background: var(–card);
-border: 1px solid var(–border);
-border-radius: 10px;
-padding: 14px;
-margin-bottom: 8px;
-transition: border-color 0.2s;
-cursor: pointer;
-position: relative;
-overflow: hidden;
-}
-
-.fabric-card::before {
-content: ‘’;
-position: absolute;
-left: 0; top: 0; bottom: 0;
-width: 3px;
-border-radius: 3px 0 0 3px;
-}
-
-.fabric-card.low::before { background: var(–red); }
-.fabric-card.ok::before { background: var(–green); }
-.fabric-card.medium::before { background: var(–gold); }
-
-.fabric-card:hover { border-color: var(–gold); }
-
-.fabric-top {
-display: flex;
-justify-content: space-between;
-align-items: flex-start;
-margin-bottom: 8px;
-}
-
-.fabric-name {
-font-weight: 600;
-font-size: 14px;
-color: var(–text);
-}
-
-.fabric-type {
-font-size: 11px;
-color: var(–muted);
-margin-top: 2px;
-}
-
-.fabric-meter {
-text-align: right;
-}
-
-.meter-value {
-font-family: var(–font-display);
-font-size: 20px;
-font-weight: 700;
-color: var(–gold);
-line-height: 1;
-}
-
-.meter-label {
-font-size: 10px;
-color: var(–muted);
-text-transform: uppercase;
-letter-spacing: 1px;
-}
-
-.fabric-bar {
-height: 4px;
-background: var(–border);
-border-radius: 2px;
-overflow: hidden;
-margin-bottom: 8px;
-}
-
-.fabric-bar-fill {
-height: 100%;
-border-radius: 2px;
-transition: width 0.5s ease;
-}
-
-.fabric-meta {
-display: flex;
-justify-content: space-between;
-font-size: 11px;
-color: var(–muted);
-}
-
-.low-badge {
-background: rgba(192,57,43,0.15);
-color: var(–red);
-font-size: 10px;
-font-weight: 600;
-padding: 2px 8px;
-border-radius: 4px;
-letter-spacing: 0.5px;
-}
-
-/* MAIN CONTENT */
-.main {
-display: flex;
-flex-direction: column;
-overflow: hidden;
-}
-
-/* STATS ROW */
-.stats-row {
-display: grid;
-grid-template-columns: repeat(4, 1fr);
-border-bottom: 1px solid var(–border);
-}
-
-.stat-box {
-padding: 20px 24px;
-border-right: 1px solid var(–border);
-}
-
-.stat-box:last-child { border-right: none; }
+.stat-cell:last-child { border-right: none; }
+.stat-cell:hover { background: var(--bg); }
 
 .stat-label {
-font-size: 11px;
-color: var(–muted);
-text-transform: uppercase;
-letter-spacing: 1.5px;
-margin-bottom: 6px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 6px;
 }
 
-.stat-value {
-font-family: var(–font-display);
-font-size: 28px;
-font-weight: 700;
-color: var(–text);
-line-height: 1;
+.stat-val {
+  font-family: var(--font-display);
+  font-size: 26px;
+  color: var(--text);
+  line-height: 1;
 }
 
-.stat-unit {
-font-size: 13px;
-color: var(–muted);
-margin-left: 4px;
-font-family: var(–font-body);
+.stat-val.danger { color: var(--red); }
+.stat-val.success { color: var(--green); }
+
+.stat-hint { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* CENTER - INVENTORY TABLE */
+.center-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: var(--bg);
 }
 
-.stat-sub {
-font-size: 11px;
-color: var(–muted);
-margin-top: 4px;
+.center-head {
+  background: var(--white);
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-shrink: 0;
+}
+
+.center-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  color: var(--text);
+}
+
+.search-wrap { position: relative; }
+.search-icon {
+  position: absolute;
+  left: 10px; top: 50%;
+  transform: translateY(-50%);
+  color: var(--muted);
+  font-size: 13px;
+}
+
+#inv-search {
+  width: 200px;
+  padding-left: 30px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+  font-size: 12px;
+  background: var(--bg);
+}
+
+.table-wrap {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+}
+
+.table-wrap::-webkit-scrollbar { width: 3px; }
+.table-wrap::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.fabric-row {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 16px;
+  margin-bottom: 8px;
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow 0.15s, border-color 0.15s;
+  animation: rowIn 0.25s ease;
+}
+
+@keyframes rowIn {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.fabric-row:hover {
+  border-color: var(--border2);
+  box-shadow: var(--shadow);
+}
+
+.fabric-row.low-row { border-left: 3px solid var(--red); }
+.fabric-row.mid-row { border-left: 3px solid var(--amber); }
+.fabric-row.ok-row { border-left: 3px solid var(--green-mid); }
+
+.fab-name { font-weight: 600; font-size: 14px; color: var(--text); }
+.fab-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+.fab-meter {
+  text-align: right;
+  min-width: 60px;
+}
+
+.fab-meter-val {
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1;
+  color: var(--text);
+}
+
+.fab-meter-lbl {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+.fab-bar-wrap { min-width: 80px; }
+
+.fab-bar {
+  height: 4px;
+  background: var(--border);
+  border-radius: 2px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+
+.fab-bar-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+
+.fab-bar-text { font-size: 10px; color: var(--muted); text-align: right; }
+
+.pill {
+  display: inline-block;
+  font-size: 10px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  letter-spacing: 0.3px;
+}
+
+.pill-red { background: var(--red-light); color: var(--red); }
+.pill-amber { background: var(--amber-light); color: var(--amber); }
+.pill-green { background: var(--green-light); color: var(--green); }
+
+.fab-rate {
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 500;
+  text-align: right;
+  min-width: 55px;
+}
+
+.empty-wrap {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.empty-icon { font-size: 36px; margin-bottom: 12px; }
+.empty-text { font-size: 14px; }
+
+/* CALCULATOR */
+.calc-box {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 14px;
+}
+
+.calc-title {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  margin-bottom: 10px;
+}
+
+.calc-result {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 12px;
+  margin-top: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.calc-result-label { font-size: 12px; color: var(--muted); }
+
+.calc-result-val {
+  font-family: var(--font-display);
+  font-size: 20px;
+  color: var(--green);
 }
 
 /* AI CHAT */
-.chat-area {
-flex: 1;
-display: flex;
-flex-direction: column;
-overflow: hidden;
+.chat-panel {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 
-.chat-header {
-padding: 16px 24px;
-border-bottom: 1px solid var(–border);
-display: flex;
-align-items: center;
-gap: 12px;
+.chat-msgs {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
 
-.ai-avatar {
-width: 36px;
-height: 36px;
-background: linear-gradient(135deg, var(–gold), var(–green));
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 16px;
-flex-shrink: 0;
+.chat-msgs::-webkit-scrollbar { width: 3px; }
+.chat-msgs::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+
+.msg { display: flex; gap: 8px; max-width: 88%; animation: msgIn 0.2s ease; }
+@keyframes msgIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-.chat-title {
-font-weight: 600;
-font-size: 14px;
-color: var(–text);
+.msg.user { align-self: flex-end; flex-direction: row-reverse; }
+
+.msg-av {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 12px;
+  flex-shrink: 0;
+  border: 1px solid var(--border);
+  background: var(--bg);
 }
 
-.chat-subtitle {
-font-size: 11px;
-color: var(–muted);
-}
-
-.chat-online {
-width: 8px;
-height: 8px;
-background: #27ae60;
-border-radius: 50%;
-margin-left: auto;
-box-shadow: 0 0 6px rgba(39,174,96,0.6);
-animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-0%, 100% { opacity: 1; }
-50% { opacity: 0.5; }
-}
-
-.chat-messages {
-flex: 1;
-overflow-y: auto;
-padding: 20px 24px;
-display: flex;
-flex-direction: column;
-gap: 16px;
-}
-
-.chat-messages::-webkit-scrollbar { width: 4px; }
-.chat-messages::-webkit-scrollbar-track { background: transparent; }
-.chat-messages::-webkit-scrollbar-thumb { background: var(–border); border-radius: 2px; }
-
-.msg {
-display: flex;
-gap: 12px;
-max-width: 80%;
-animation: fadeUp 0.3s ease;
-}
-
-@keyframes fadeUp {
-from { opacity: 0; transform: translateY(10px); }
-to { opacity: 1; transform: translateY(0); }
-}
-
-.msg.user {
-align-self: flex-end;
-flex-direction: row-reverse;
-}
-
-.msg-avatar {
-width: 32px;
-height: 32px;
-border-radius: 50%;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 14px;
-flex-shrink: 0;
-}
-
-.msg.ai .msg-avatar { background: linear-gradient(135deg, var(–gold), var(–green)); }
-.msg.user .msg-avatar { background: var(–surface); border: 1px solid var(–border); }
+.msg.ai .msg-av { background: var(--green-light); border-color: #c4ddc9; }
 
 .msg-bubble {
-padding: 12px 16px;
-border-radius: 14px;
-font-size: 14px;
-line-height: 1.6;
-}
-
-.msg.ai .msg-bubble {
-background: var(–card);
-border: 1px solid var(–border);
-border-top-left-radius: 4px;
-color: var(–text);
+  padding: 10px 13px;
+  border-radius: 12px;
+  font-size: 13px;
+  line-height: 1.65;
+  background: var(--white);
+  border: 1px solid var(--border);
+  color: var(--text);
+  border-top-left-radius: 4px;
 }
 
 .msg.user .msg-bubble {
-background: var(–green);
-color: #fff;
-border-top-right-radius: 4px;
+  background: var(--green);
+  color: white;
+  border-color: var(--green);
+  border-top-right-radius: 4px;
+  border-top-left-radius: 12px;
 }
 
-.msg-time {
-font-size: 10px;
-color: var(–muted);
-margin-top: 4px;
-text-align: right;
+.msg-time { font-size: 10px; color: var(--muted); margin-top: 3px; padding: 0 2px; }
+.msg.user .msg-time { text-align: right; }
+
+.typing-dots { display: flex; gap: 4px; padding: 2px 0; }
+.typing-dots span {
+  width: 5px; height: 5px;
+  background: var(--muted);
+  border-radius: 50%;
+  animation: tdot 1.2s infinite;
+}
+.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+@keyframes tdot { 0%,60%,100%{transform:translateY(0);opacity:.35} 30%{transform:translateY(-4px);opacity:1} }
+
+.quick-btns {
+  padding: 10px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  background: var(--bg);
 }
 
-.msg.ai .msg-time { text-align: left; }
-
-/* QUICK QUESTIONS */
-.quick-questions {
-padding: 12px 24px;
-display: flex;
-gap: 8px;
-flex-wrap: wrap;
-border-top: 1px solid var(–border);
+.qbtn {
+  background: var(--white);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 5px 11px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 500;
+  cursor: pointer;
+  font-family: var(--font-body);
+  transition: all 0.15s;
 }
 
-.quick-btn {
-background: var(–card);
-border: 1px solid var(–border);
-color: var(–muted);
-padding: 6px 14px;
-border-radius: 20px;
-font-size: 12px;
-cursor: pointer;
-transition: all 0.2s;
-font-family: var(–font-body);
+.qbtn:hover { border-color: var(--green); color: var(--green); background: var(--green-light); }
+
+.chat-input-row {
+  padding: 12px 16px;
+  border-top: 1px solid var(--border);
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  background: var(--white);
 }
 
-.quick-btn:hover {
-border-color: var(–gold);
-color: var(–gold);
-background: rgba(200,151,58,0.06);
+#chat-inp {
+  flex: 1;
+  border-radius: 22px;
+  font-size: 13px;
+  padding: 9px 15px;
 }
-
-/* CHAT INPUT */
-.chat-input-area {
-padding: 16px 24px;
-border-top: 1px solid var(–border);
-display: flex;
-gap: 10px;
-align-items: center;
-background: var(–bg);
-}
-
-.chat-input {
-flex: 1;
-background: var(–card);
-border: 1px solid var(–border);
-border-radius: 24px;
-color: var(–text);
-font-family: var(–font-body);
-font-size: 14px;
-padding: 12px 18px;
-outline: none;
-transition: border-color 0.2s;
-}
-
-.chat-input:focus { border-color: var(–gold); }
-.chat-input::placeholder { color: var(–muted); }
 
 .send-btn {
-width: 44px;
-height: 44px;
-background: var(–gold);
-border: none;
-border-radius: 50%;
-color: #0d0b08;
-font-size: 18px;
-cursor: pointer;
-display: flex;
-align-items: center;
-justify-content: center;
-transition: all 0.2s;
-flex-shrink: 0;
+  width: 36px; height: 36px;
+  background: var(--green);
+  border: none;
+  border-radius: 50%;
+  color: white;
+  font-size: 14px;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.15s;
 }
 
-.send-btn:hover { background: var(–gold-light); transform: scale(1.05); }
+.send-btn:hover { background: var(--green-mid); transform: scale(1.05); }
 
-/* TYPING INDICATOR */
-.typing {
-display: flex;
-gap: 4px;
-padding: 8px 0;
+/* SALES LOG */
+.sale-item {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 11px 13px;
+  margin-bottom: 7px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-.typing span {
-width: 6px;
-height: 6px;
-background: var(–muted);
-border-radius: 50%;
-animation: typingAnim 1.2s infinite;
+.sale-name { font-weight: 600; font-size: 13px; }
+.sale-meta { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.sale-amount { font-family: var(--font-display); font-size: 16px; color: var(--green); }
+
+/* DIVIDER */
+.section-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 10px;
+  margin-top: 16px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
 }
 
-.typing span:nth-child(2) { animation-delay: 0.2s; }
-.typing span:nth-child(3) { animation-delay: 0.4s; }
-
-@keyframes typingAnim {
-0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-30% { transform: translateY(-4px); opacity: 1; }
-}
+.section-label:first-child { margin-top: 0; }
 
 /* TOAST */
-.toast {
-position: fixed;
-bottom: 24px;
-right: 24px;
-background: var(–green);
-color: #fff;
-padding: 12px 20px;
-border-radius: 10px;
-font-size: 13px;
-font-weight: 500;
-z-index: 999;
-animation: slideIn 0.3s ease;
-display: none;
+#toast {
+  position: fixed;
+  bottom: 24px; right: 24px;
+  background: var(--text);
+  color: white;
+  padding: 11px 18px;
+  border-radius: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  display: none;
+  z-index: 999;
+  box-shadow: var(--shadow-md);
+  animation: toastIn 0.25s ease;
 }
 
-@keyframes slideIn {
-from { opacity: 0; transform: translateX(20px); }
-to { opacity: 1; transform: translateX(0); }
+@keyframes toastIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
-
-.section-title {
-font-family: var(–font-display);
-font-size: 13px;
-font-weight: 700;
-color: var(–gold);
-text-transform: uppercase;
-letter-spacing: 2px;
-margin-bottom: 12px;
-margin-top: 4px;
-}
-
-.empty-state {
-text-align: center;
-padding: 40px 20px;
-color: var(–muted);
-font-size: 13px;
-}
-
-.empty-state .emoji { font-size: 32px; margin-bottom: 10px; }
-
-/* SELL FORM */
-#sell-panel { display: none; }
-#add-panel { display: block; }
 </style>
-
 </head>
 <body>
 
+<!-- HEADER -->
 <header>
   <div class="logo">
-    <div class="logo-icon">🧵</div>
+    <div class="logo-mark">S</div>
     <div>
-      <div class="logo-text">Kapda AI</div>
-      <div class="logo-sub">Textile Stock Manager</div>
+      <span class="logo-name">StockSaathi</span>
+      <span class="logo-tag"> — Textile Stock Manager</span>
     </div>
   </div>
-  <div class="header-badge">✦ AI Powered</div>
+  <div class="header-right">
+    <div class="badge">AI Powered</div>
+  </div>
 </header>
 
-<div class="app">
-
-  <!-- SIDEBAR -->
-
-  <div class="sidebar">
-    <div class="sidebar-tabs">
-      <div class="tab active" onclick="switchTab('add')">+ Add Stock</div>
-      <div class="tab" onclick="switchTab('sell')">− Sell</div>
-      <div class="tab" onclick="switchTab('list')">📦 Inventory</div>
-    </div>
-
-```
-<!-- ADD STOCK PANEL -->
-<div class="sidebar-content" id="add-panel">
-  <div class="section-title">Add New Stock</div>
-  <div class="form-section">
-    <div class="form-group">
-      <div class="form-label">Fabric Name</div>
-      <input type="text" id="fabric-name" placeholder="e.g. Red Georgette" />
-    </div>
-    <div class="row-2">
-      <div class="form-group">
-        <div class="form-label">Type / Category</div>
-        <select id="fabric-type">
-          <option value="Georgette">Georgette</option>
-          <option value="Chiffon">Chiffon</option>
-          <option value="Silk">Silk</option>
-          <option value="Cotton">Cotton</option>
-          <option value="Linen">Linen</option>
-          <option value="Velvet">Velvet</option>
-          <option value="Satin">Satin</option>
-          <option value="Net">Net</option>
-          <option value="Rayon">Rayon</option>
-          <option value="Other">Other</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <div class="form-label">Color</div>
-        <input type="text" id="fabric-color" placeholder="e.g. Red" />
-      </div>
-    </div>
-    <div class="row-2">
-      <div class="form-group">
-        <div class="form-label">Meters</div>
-        <input type="number" id="fabric-meters" placeholder="e.g. 200" min="0" />
-      </div>
-      <div class="form-group">
-        <div class="form-label">Low Alert (m)</div>
-        <input type="number" id="fabric-threshold" placeholder="e.g. 50" min="0" />
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="form-label">Rate per Meter (₹)</div>
-      <input type="number" id="fabric-rate" placeholder="e.g. 120" min="0" />
-    </div>
-    <div class="form-group">
-      <div class="form-label">Supplier / Lot Note</div>
-      <input type="text" id="fabric-supplier" placeholder="e.g. Rajan Textiles, Lot #12" />
-    </div>
-    <button class="btn btn-gold" onclick="addStock()" style="width:100%; margin-top:4px;">
-      ✦ Add to Inventory
-    </button>
+<!-- STATS -->
+<div class="stats-grid">
+  <div class="stat-cell">
+    <div class="stat-label">Total Fabrics</div>
+    <div class="stat-val" id="st-fab">0</div>
+    <div class="stat-hint">in inventory</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-label">Total Stock</div>
+    <div class="stat-val success" id="st-m">0m</div>
+    <div class="stat-hint">across all fabrics</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-label">Low Stock</div>
+    <div class="stat-val danger" id="st-low">0</div>
+    <div class="stat-hint">need reorder</div>
+  </div>
+  <div class="stat-cell">
+    <div class="stat-label">Inventory Value</div>
+    <div class="stat-val" id="st-val">₹0</div>
+    <div class="stat-hint">total stock value</div>
   </div>
 </div>
 
-<!-- SELL PANEL -->
-<div class="sidebar-content" id="sell-panel">
-  <div class="section-title">Record Sale</div>
-  <div class="form-section">
-    <div class="form-group">
-      <div class="form-label">Select Fabric</div>
-      <select id="sell-fabric"></select>
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- LEFT PANEL: ADD / SELL / CALC -->
+  <div class="panel">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('add',this)">Add Stock</div>
+      <div class="tab" onclick="switchTab('sell',this)">Sell</div>
+      <div class="tab" onclick="switchTab('calc',this)">Calculator</div>
     </div>
-    <div class="row-2">
+
+    <!-- ADD -->
+    <div class="panel-body" id="tab-add">
+      <div class="section-label">New Fabric Entry</div>
       <div class="form-group">
-        <div class="form-label">Meters Sold</div>
-        <input type="number" id="sell-meters" placeholder="e.g. 30" min="0" />
+        <label class="form-label">Fabric Name</label>
+        <input id="f-name" type="text" placeholder="e.g. Red Georgette" />
       </div>
-      <div class="form-group">
-        <div class="form-label">Rate (₹/m)</div>
-        <input type="number" id="sell-rate" placeholder="auto" min="0" />
-      </div>
-    </div>
-    <div class="form-group">
-      <div class="form-label">Customer Name</div>
-      <input type="text" id="sell-customer" placeholder="e.g. Rajesh Bhai" />
-    </div>
-    <div class="form-group">
-      <div class="form-label">Note</div>
-      <input type="text" id="sell-note" placeholder="Optional note" />
-    </div>
-    <button class="btn btn-red" onclick="recordSale()" style="width:100%; margin-top:4px;">
-      Record Sale
-    </button>
-  </div>
-
-  <hr class="divider" style="margin-top:20px;" />
-  <div class="section-title" style="margin-top:16px;">Recent Sales</div>
-  <div id="sales-log">
-    <div class="empty-state">
-      <div class="emoji">📋</div>
-      No sales recorded yet
-    </div>
-  </div>
-</div>
-
-<!-- INVENTORY LIST PANEL -->
-<div class="sidebar-content" id="list-panel" style="display:none;">
-  <div class="inv-header">
-    <div class="inv-title">All Fabrics</div>
-    <div class="inv-count" id="inv-count">0 items</div>
-  </div>
-  <div class="search-box">
-    <input type="text" id="inv-search" placeholder="🔍 Search fabric..." oninput="renderInventory()" />
-  </div>
-  <div id="inventory-list">
-    <div class="empty-state">
-      <div class="emoji">📦</div>
-      Add fabrics to see them here
-    </div>
-  </div>
-</div>
-```
-
-  </div>
-
-  <!-- MAIN -->
-
-  <div class="main">
-    <!-- STATS -->
-    <div class="stats-row">
-      <div class="stat-box">
-        <div class="stat-label">Total Fabrics</div>
-        <div class="stat-value" id="stat-fabrics">0 <span class="stat-unit">items</span></div>
-        <div class="stat-sub">in inventory</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Total Stock</div>
-        <div class="stat-value" id="stat-meters">0 <span class="stat-unit">m</span></div>
-        <div class="stat-sub">across all fabrics</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Low Stock Alerts</div>
-        <div class="stat-value" id="stat-low" style="color: var(--red);">0 <span class="stat-unit" style="color:var(--muted);">items</span></div>
-        <div class="stat-sub">need reorder</div>
-      </div>
-      <div class="stat-box">
-        <div class="stat-label">Stock Value</div>
-        <div class="stat-value" id="stat-value">₹0</div>
-        <div class="stat-sub">total inventory</div>
-      </div>
-    </div>
-
-```
-<!-- AI CHAT -->
-<div class="chat-area">
-  <div class="chat-header">
-    <div class="ai-avatar">🤖</div>
-    <div>
-      <div class="chat-title">Kapda AI Assistant</div>
-      <div class="chat-subtitle">Ask anything about your stock in Hindi or English</div>
-    </div>
-    <div class="chat-online"></div>
-  </div>
-
-  <div class="chat-messages" id="chat-messages">
-    <div class="msg ai">
-      <div class="msg-avatar">🤖</div>
-      <div>
-        <div class="msg-bubble">
-          Namaste! 🙏 Main aapka textile stock manager hoon. Aap mujhse stock ke baare mein kuch bhi puch sakte ho — <strong>"kitna bacha hai?", "low stock kya hai?", "aaj kitna sell hua?"</strong> — sab pooch sakte ho! Add Stock karke shuru karo. 😊
+      <div class="grid2">
+        <div class="form-group">
+          <label class="form-label">Type</label>
+          <select id="f-type">
+            <option>Georgette</option><option>Chiffon</option>
+            <option>Silk</option><option>Cotton</option>
+            <option>Velvet</option><option>Satin</option>
+            <option>Net</option><option>Rayon</option>
+            <option>Linen</option><option>Other</option>
+          </select>
         </div>
-        <div class="msg-time">Just now</div>
+        <div class="form-group">
+          <label class="form-label">Color</label>
+          <input id="f-color" type="text" placeholder="e.g. Red" />
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="form-group">
+          <label class="form-label">Meters</label>
+          <input id="f-meters" type="number" placeholder="200" min="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Alert at (m)</label>
+          <input id="f-thresh" type="number" placeholder="50" min="0" />
+        </div>
+      </div>
+      <div class="grid2">
+        <div class="form-group">
+          <label class="form-label">Rate ₹/m</label>
+          <input id="f-rate" type="number" placeholder="120" min="0" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Supplier</label>
+          <input id="f-supplier" type="text" placeholder="Optional" />
+        </div>
+      </div>
+      <button class="btn btn-green" onclick="addStock()">+ Add to Inventory</button>
+
+      <div class="section-label" style="margin-top:20px;">Remove Stock</div>
+      <div class="form-group">
+        <label class="form-label">Select Fabric</label>
+        <select id="rem-fabric"></select>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Meters to Remove</label>
+        <input id="rem-meters" type="number" placeholder="e.g. 20" min="0" />
+      </div>
+      <button class="btn btn-outline" onclick="removeStock()">− Remove Stock</button>
+    </div>
+
+    <!-- SELL -->
+    <div class="panel-body" id="tab-sell" style="display:none">
+      <div class="section-label">Record a Sale</div>
+      <div class="form-group">
+        <label class="form-label">Select Fabric</label>
+        <select id="s-fabric"></select>
+      </div>
+      <div class="grid2">
+        <div class="form-group">
+          <label class="form-label">Meters Sold</label>
+          <input id="s-meters" type="number" placeholder="30" min="0" oninput="calcSaleTotal()" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Rate ₹/m</label>
+          <input id="s-rate" type="number" placeholder="auto" min="0" oninput="calcSaleTotal()" />
+        </div>
+      </div>
+      <div class="calc-result" style="margin-bottom:12px;">
+        <span class="calc-result-label">Sale Total</span>
+        <span class="calc-result-val" id="sale-total">₹0</span>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Customer Name</label>
+        <input id="s-customer" type="text" placeholder="e.g. Rajesh Bhai" />
+      </div>
+      <button class="btn btn-amber" onclick="recordSale()">Record Sale</button>
+
+      <div class="section-label" style="margin-top:20px;">Recent Sales</div>
+      <div id="sales-log">
+        <div class="empty-wrap" style="padding:20px">
+          <div style="color:var(--muted);font-size:13px;">No sales yet</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CALCULATOR -->
+    <div class="panel-body" id="tab-calc" style="display:none">
+      <div class="section-label">Quick Calculations</div>
+
+      <div class="calc-box">
+        <div class="calc-title">Fabric Cost</div>
+        <div class="grid2">
+          <div class="form-group">
+            <label class="form-label">Meters</label>
+            <input id="c1-m" type="number" placeholder="100" oninput="calc1()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Rate ₹/m</label>
+            <input id="c1-r" type="number" placeholder="120" oninput="calc1()" />
+          </div>
+        </div>
+        <div class="calc-result">
+          <span class="calc-result-label">Total Cost</span>
+          <span class="calc-result-val" id="c1-res">₹0</span>
+        </div>
+      </div>
+
+      <div class="calc-box">
+        <div class="calc-title">Profit Calculator</div>
+        <div class="grid2">
+          <div class="form-group">
+            <label class="form-label">Buy ₹/m</label>
+            <input id="c2-buy" type="number" placeholder="100" oninput="calc2()" />
+          </div>
+          <div class="form-group">
+            <label class="form-label">Sell ₹/m</label>
+            <input id="c2-sell" type="number" placeholder="140" oninput="calc2()" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Total Meters</label>
+          <input id="c2-m" type="number" placeholder="50" oninput="calc2()" />
+        </div>
+        <div class="calc-result">
+          <span class="calc-result-label">Profit</span>
+          <span class="calc-result-val" id="c2-res">₹0</span>
+        </div>
+      </div>
+
+      <div class="calc-box">
+        <div class="calc-title">GST Calculator (5%)</div>
+        <div class="form-group">
+          <label class="form-label">Base Amount ₹</label>
+          <input id="c3-amt" type="number" placeholder="5000" oninput="calc3()" />
+        </div>
+        <div class="calc-result" style="margin-bottom:6px">
+          <span class="calc-result-label">GST (5%)</span>
+          <span class="calc-result-val" id="c3-gst">₹0</span>
+        </div>
+        <div class="calc-result">
+          <span class="calc-result-label">Total with GST</span>
+          <span class="calc-result-val" id="c3-total">₹0</span>
+        </div>
       </div>
     </div>
   </div>
 
-  <div class="quick-questions">
-    <button class="quick-btn" onclick="quickAsk('Kitna total stock hai?')">📦 Total stock?</button>
-    <button class="quick-btn" onclick="quickAsk('Kaun sa fabric low stock mein hai?')">⚠️ Low stock?</button>
-    <button class="quick-btn" onclick="quickAsk('Sabse zyada stock kiska hai?')">🏆 Most stock?</button>
-    <button class="quick-btn" onclick="quickAsk('Total inventory value kya hai?')">💰 Stock value?</button>
-    <button class="quick-btn" onclick="quickAsk('Aaj kitni sale hui?')">📊 Today sales?</button>
+  <!-- CENTER: INVENTORY -->
+  <div class="center-panel">
+    <div class="center-head">
+      <div class="center-title">Inventory <span id="inv-count" style="font-family:var(--font-body);font-size:12px;color:var(--muted);font-style:normal;"></span></div>
+      <div class="search-wrap">
+        <span class="search-icon">⌕</span>
+        <input id="inv-search" type="text" placeholder="Search fabric..." oninput="renderInventory()" />
+      </div>
+    </div>
+    <div class="table-wrap" id="inv-list">
+      <div class="empty-wrap">
+        <div class="empty-icon">📦</div>
+        <div class="empty-text">Add fabrics to see them here</div>
+      </div>
+    </div>
   </div>
 
-  <div class="chat-input-area">
-    <input class="chat-input" id="chat-input" placeholder="Kuch bhi poochho... e.g. 'Red georgette kitna bacha hai?'" onkeydown="if(event.key==='Enter') sendMessage()" />
-    <button class="send-btn" onclick="sendMessage()">➤</button>
+  <!-- RIGHT: AI CHAT -->
+  <div class="panel panel-right chat-panel">
+    <div class="panel-head">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:32px;height:32px;border-radius:50%;background:var(--green-light);border:1px solid #c4ddc9;display:flex;align-items:center;justify-content:center;font-size:14px;">🤖</div>
+        <div>
+          <div class="panel-title" style="font-size:15px;">Saathi AI</div>
+          <div class="panel-sub">Ask in Hindi or English</div>
+        </div>
+        <div style="margin-left:auto;width:7px;height:7px;background:#27ae60;border-radius:50%;"></div>
+      </div>
+    </div>
+
+    <div class="chat-msgs" id="chat-msgs">
+      <div class="msg ai">
+        <div class="msg-av">🤖</div>
+        <div>
+          <div class="msg-bubble">
+            Namaste! 🙏 Main <strong>Saathi AI</strong> hoon — aapka textile stock assistant. Kuch bhi poochho — stock, sales, value — sab bataunga!
+          </div>
+          <div class="msg-time">Just now</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="quick-btns">
+      <button class="qbtn" onclick="qask('Kitna total stock hai?')">Total stock?</button>
+      <button class="qbtn" onclick="qask('Low stock mein kaun hai?')">Low alerts?</button>
+      <button class="qbtn" onclick="qask('Sabse mehenga fabric kaun sa hai?')">Costly fabric?</button>
+      <button class="qbtn" onclick="qask('Total inventory ki value kya hai?')">Total value?</button>
+      <button class="qbtn" onclick="qask('Aaj ki sales summary do')">Sales today?</button>
+    </div>
+
+    <div class="chat-input-row">
+      <input id="chat-inp" placeholder="Kuch bhi poochho..." onkeydown="if(event.key==='Enter')sendMsg()" />
+      <button class="send-btn" onclick="sendMsg()">➤</button>
+    </div>
   </div>
+
 </div>
-```
 
-  </div>
-</div>
-
-<div class="toast" id="toast"></div>
+<div id="toast"></div>
 
 <script>
-// ─── STATE ───────────────────────────────────────────────────────────────
-let inventory = JSON.parse(localStorage.getItem('kapda_inventory') || '[]');
-let sales = JSON.parse(localStorage.getItem('kapda_sales') || '[]');
+// ── STATE ─────────────────────────────────────────────────
+let inv = JSON.parse(localStorage.getItem('ss_inv') || '[]');
+let sales = JSON.parse(localStorage.getItem('ss_sales') || '[]');
 
-// SEED DATA if empty
-if (inventory.length === 0) {
-  inventory = [
-    { id: 1, name: 'Red Georgette', type: 'Georgette', color: 'Red', meters: 180, threshold: 50, rate: 120, supplier: 'Rajan Textiles', addedDate: new Date().toISOString() },
-    { id: 2, name: 'Blue Chiffon', type: 'Chiffon', color: 'Blue', meters: 45, threshold: 60, rate: 95, supplier: 'Mehta Fabrics', addedDate: new Date().toISOString() },
-    { id: 3, name: 'Golden Silk', type: 'Silk', color: 'Golden', meters: 220, threshold: 30, rate: 340, supplier: 'Surat Silk House', addedDate: new Date().toISOString() },
-    { id: 4, name: 'White Cotton', type: 'Cotton', color: 'White', meters: 12, threshold: 40, rate: 55, supplier: 'Gujarat Cotton Co.', addedDate: new Date().toISOString() },
-    { id: 5, name: 'Black Velvet', type: 'Velvet', color: 'Black', meters: 88, threshold: 25, rate: 280, supplier: 'Royal Fabrics', addedDate: new Date().toISOString() },
+if (inv.length === 0) {
+  inv = [
+    { id:1, name:'Red Georgette', type:'Georgette', color:'Red', meters:180, threshold:50, rate:120, supplier:'Rajan Textiles' },
+    { id:2, name:'Blue Chiffon', type:'Chiffon', color:'Blue', meters:45, threshold:60, rate:95, supplier:'Mehta Fabrics' },
+    { id:3, name:'Golden Silk', type:'Silk', color:'Golden', meters:220, threshold:30, rate:340, supplier:'Surat Silk House' },
+    { id:4, name:'White Cotton', type:'Cotton', color:'White', meters:12, threshold:40, rate:55, supplier:'Gujarat Cotton' },
+    { id:5, name:'Black Velvet', type:'Velvet', color:'Black', meters:88, threshold:25, rate:280, supplier:'Royal Fabrics' },
   ];
-  saveData();
+  save();
 }
 
-function saveData() {
-  localStorage.setItem('kapda_inventory', JSON.stringify(inventory));
-  localStorage.setItem('kapda_sales', JSON.stringify(sales));
+function save() {
+  localStorage.setItem('ss_inv', JSON.stringify(inv));
+  localStorage.setItem('ss_sales', JSON.stringify(sales));
 }
 
-// ─── UI TABS ─────────────────────────────────────────────────────────────
-function switchTab(tab) {
-  document.querySelectorAll('.tab').forEach((t, i) => {
-    t.classList.toggle('active', ['add','sell','list'][i] === tab);
+// ── TABS ─────────────────────────────────────────────────
+function switchTab(id, el) {
+  ['add','sell','calc'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===id ? 'block' : 'none';
   });
-  document.getElementById('add-panel').style.display = tab === 'add' ? 'block' : 'none';
-  document.getElementById('sell-panel').style.display = tab === 'sell' ? 'block' : 'none';
-  document.getElementById('list-panel').style.display = tab === 'list' ? 'block' : 'none';
-  if (tab === 'sell') populateSellDropdown();
-  if (tab === 'list') renderInventory();
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+  if (id === 'sell') { populateSellDrop(); renderSalesLog(); }
+  if (id === 'add') populateRemDrop();
 }
 
-// ─── ADD STOCK ────────────────────────────────────────────────────────────
+// ── ADD STOCK ─────────────────────────────────────────────
 function addStock() {
-  const name = document.getElementById('fabric-name').value.trim();
-  const type = document.getElementById('fabric-type').value;
-  const color = document.getElementById('fabric-color').value.trim();
-  const meters = parseFloat(document.getElementById('fabric-meters').value);
-  const threshold = parseFloat(document.getElementById('fabric-threshold').value) || 50;
-  const rate = parseFloat(document.getElementById('fabric-rate').value) || 0;
-  const supplier = document.getElementById('fabric-supplier').value.trim();
+  const name = document.getElementById('f-name').value.trim();
+  const meters = parseFloat(document.getElementById('f-meters').value);
+  if (!name || !meters || meters <= 0) { toast('⚠ Fabric name aur meters daalo!','#c0392b'); return; }
 
-  if (!name || !meters || meters <= 0) {
-    showToast('⚠️ Fabric name aur meters daalo!', '#c0392b');
-    return;
-  }
-
-  // Check if same fabric exists
-  const existing = inventory.find(f => f.name.toLowerCase() === name.toLowerCase());
+  const existing = inv.find(f => f.name.toLowerCase() === name.toLowerCase());
   if (existing) {
     existing.meters += meters;
-    showToast(`✓ ${name} mein ${meters}m add hua! Total: ${existing.meters}m`);
+    toast(`✓ ${meters}m added to ${name}`);
   } else {
-    inventory.push({
+    inv.push({
       id: Date.now(),
-      name, type, color, meters, threshold, rate, supplier,
-      addedDate: new Date().toISOString()
+      name,
+      type: document.getElementById('f-type').value,
+      color: document.getElementById('f-color').value.trim() || '—',
+      meters,
+      threshold: parseFloat(document.getElementById('f-thresh').value) || 50,
+      rate: parseFloat(document.getElementById('f-rate').value) || 0,
+      supplier: document.getElementById('f-supplier').value.trim() || '—',
     });
-    showToast(`✓ ${name} inventory mein add hua!`);
+    toast(`✓ ${name} added to inventory!`);
   }
-
-  saveData();
-  updateStats();
-  clearForm();
+  save(); updateStats(); renderInventory(); populateRemDrop();
+  ['f-name','f-color','f-meters','f-thresh','f-rate','f-supplier'].forEach(id => document.getElementById(id).value = '');
 }
 
-function clearForm() {
-  ['fabric-name','fabric-color','fabric-meters','fabric-threshold','fabric-rate','fabric-supplier'].forEach(id => {
-    document.getElementById(id).value = '';
-  });
+function populateRemDrop() {
+  const sel = document.getElementById('rem-fabric');
+  sel.innerHTML = inv.map(f => `<option value="${f.id}">${f.name} (${f.meters}m)</option>`).join('');
 }
 
-// ─── SELL ─────────────────────────────────────────────────────────────────
-function populateSellDropdown() {
-  const sel = document.getElementById('sell-fabric');
-  sel.innerHTML = inventory.length === 0
-    ? '<option>Pehle stock add karo</option>'
-    : inventory.map(f => `<option value="${f.id}">${f.name} (${f.meters}m available)</option>`).join('');
+function removeStock() {
+  const id = parseInt(document.getElementById('rem-fabric').value);
+  const m = parseFloat(document.getElementById('rem-meters').value);
+  const fab = inv.find(f => f.id === id);
+  if (!fab || !m || m <= 0) { toast('Select fabric aur meters daalo','#c0392b'); return; }
+  if (m > fab.meters) { toast(`Only ${fab.meters}m available!`,'#c0392b'); return; }
+  fab.meters -= m;
+  save(); updateStats(); renderInventory(); populateRemDrop();
+  document.getElementById('rem-meters').value = '';
+  toast(`✓ ${m}m removed from ${fab.name}`);
+}
+
+// ── SELL ─────────────────────────────────────────────────
+function populateSellDrop() {
+  const sel = document.getElementById('s-fabric');
+  sel.innerHTML = inv.length === 0
+    ? '<option>Add stock first</option>'
+    : inv.map(f => `<option value="${f.id}" data-rate="${f.rate}">${f.name} (${f.meters}m)</option>`).join('');
+  sel.onchange = () => {
+    const opt = sel.options[sel.selectedIndex];
+    document.getElementById('s-rate').value = opt.dataset.rate || '';
+    calcSaleTotal();
+  };
+  if (inv.length) {
+    document.getElementById('s-rate').value = inv[0].rate || '';
+  }
+}
+
+function calcSaleTotal() {
+  const m = parseFloat(document.getElementById('s-meters').value) || 0;
+  const r = parseFloat(document.getElementById('s-rate').value) || 0;
+  document.getElementById('sale-total').textContent = '₹' + (m * r).toLocaleString('en-IN');
 }
 
 function recordSale() {
-  const fabricId = parseInt(document.getElementById('sell-fabric').value);
-  const meters = parseFloat(document.getElementById('sell-meters').value);
-  const customer = document.getElementById('sell-customer').value.trim();
-  const note = document.getElementById('sell-note').value.trim();
-
-  const fabric = inventory.find(f => f.id === fabricId);
-  if (!fabric) { showToast('Fabric select karo', '#c0392b'); return; }
-  if (!meters || meters <= 0) { showToast('Meters daalo', '#c0392b'); return; }
-  if (meters > fabric.meters) { showToast(`⚠️ Sirf ${fabric.meters}m available hai!`, '#c0392b'); return; }
-
-  const saleRate = parseFloat(document.getElementById('sell-rate').value) || fabric.rate;
-  fabric.meters -= meters;
-
-  const sale = {
-    id: Date.now(),
-    fabricId, fabricName: fabric.name,
-    meters, rate: saleRate,
-    total: meters * saleRate,
-    customer: customer || 'Walk-in',
-    note,
-    date: new Date().toISOString()
-  };
-
-  sales.unshift(sale);
-  saveData();
-  updateStats();
-  populateSellDropdown();
-  renderSalesLog();
-
-  showToast(`✓ ${meters}m ${fabric.name} sold to ${sale.customer}!`);
-  document.getElementById('sell-meters').value = '';
-  document.getElementById('sell-customer').value = '';
-  document.getElementById('sell-note').value = '';
-
-  if (fabric.meters < fabric.threshold) {
-    setTimeout(() => addAIMessage(`⚠️ Alert: **${fabric.name}** ka stock low hai — sirf **${fabric.meters}m** bacha hai. Reorder karne ka waqt aa gaya hai!`), 800);
+  const id = parseInt(document.getElementById('s-fabric').value);
+  const m = parseFloat(document.getElementById('s-meters').value);
+  const r = parseFloat(document.getElementById('s-rate').value);
+  const cust = document.getElementById('s-customer').value.trim() || 'Walk-in';
+  const fab = inv.find(f => f.id === id);
+  if (!fab || !m || m <= 0) { toast('Fill all fields','#c0392b'); return; }
+  if (m > fab.meters) { toast(`Only ${fab.meters}m available!`,'#c0392b'); return; }
+  fab.meters -= m;
+  const rate = r || fab.rate;
+  sales.unshift({ id: Date.now(), fabId: id, fabName: fab.name, meters: m, rate, total: m*rate, customer: cust, date: new Date().toISOString() });
+  save(); updateStats(); renderInventory(); populateSellDrop(); renderSalesLog();
+  toast(`✓ ${m}m ${fab.name} sold — ₹${(m*rate).toLocaleString('en-IN')}`);
+  ['s-meters','s-customer'].forEach(i => document.getElementById(i).value='');
+  document.getElementById('sale-total').textContent = '₹0';
+  if (fab.meters < fab.threshold) {
+    setTimeout(() => addAIMsg(`⚠️ Alert: **${fab.name}** low stock — sirf **${fab.meters}m** bacha hai. Reorder karo!`), 1000);
   }
 }
 
 function renderSalesLog() {
-  const container = document.getElementById('sales-log');
-  if (sales.length === 0) {
-    container.innerHTML = '<div class="empty-state"><div class="emoji">📋</div>No sales yet</div>';
-    return;
-  }
-  container.innerHTML = sales.slice(0, 8).map(s => `
-    <div class="fabric-card ok" style="margin-bottom:8px; cursor:default;">
-      <div class="fabric-top">
-        <div>
-          <div class="fabric-name">${s.fabricName}</div>
-          <div class="fabric-type">${s.customer} • ${new Date(s.date).toLocaleDateString('en-IN')}</div>
-        </div>
-        <div class="fabric-meter">
-          <div class="meter-value" style="color:var(--green-light)">${s.meters}m</div>
-          <div class="meter-label">₹${s.total.toLocaleString()}</div>
-        </div>
+  const el = document.getElementById('sales-log');
+  if (!sales.length) { el.innerHTML = '<div style="padding:10px;color:var(--muted);font-size:12px;">No sales yet</div>'; return; }
+  el.innerHTML = sales.slice(0,6).map(s => `
+    <div class="sale-item">
+      <div>
+        <div class="sale-name">${s.fabName}</div>
+        <div class="sale-meta">${s.meters}m · ${s.customer} · ${new Date(s.date).toLocaleDateString('en-IN')}</div>
       </div>
-    </div>
-  `).join('');
+      <div class="sale-amount">₹${s.total.toLocaleString('en-IN')}</div>
+    </div>`).join('');
 }
 
-// ─── INVENTORY LIST ───────────────────────────────────────────────────────
+// ── CALCULATORS ──────────────────────────────────────────
+function calc1() {
+  const m = parseFloat(document.getElementById('c1-m').value)||0;
+  const r = parseFloat(document.getElementById('c1-r').value)||0;
+  document.getElementById('c1-res').textContent = '₹' + (m*r).toLocaleString('en-IN');
+}
+function calc2() {
+  const buy = parseFloat(document.getElementById('c2-buy').value)||0;
+  const sell = parseFloat(document.getElementById('c2-sell').value)||0;
+  const m = parseFloat(document.getElementById('c2-m').value)||0;
+  const profit = (sell-buy)*m;
+  const el = document.getElementById('c2-res');
+  el.textContent = '₹' + profit.toLocaleString('en-IN');
+  el.style.color = profit >= 0 ? 'var(--green)' : 'var(--red)';
+}
+function calc3() {
+  const amt = parseFloat(document.getElementById('c3-amt').value)||0;
+  const gst = amt * 0.05;
+  document.getElementById('c3-gst').textContent = '₹' + gst.toLocaleString('en-IN');
+  document.getElementById('c3-total').textContent = '₹' + (amt+gst).toLocaleString('en-IN');
+}
+
+// ── INVENTORY ─────────────────────────────────────────────
 function renderInventory() {
-  const search = (document.getElementById('inv-search')?.value || '').toLowerCase();
-  const filtered = inventory.filter(f =>
-    f.name.toLowerCase().includes(search) ||
-    f.type.toLowerCase().includes(search) ||
-    f.color.toLowerCase().includes(search)
+  const q = (document.getElementById('inv-search')?.value||'').toLowerCase();
+  const list = inv.filter(f =>
+    f.name.toLowerCase().includes(q) ||
+    f.type.toLowerCase().includes(q) ||
+    f.color.toLowerCase().includes(q)
   );
-
-  document.getElementById('inv-count').textContent = `${filtered.length} items`;
-
-  if (filtered.length === 0) {
-    document.getElementById('inventory-list').innerHTML = '<div class="empty-state"><div class="emoji">📦</div>Koi fabric nahi mila</div>';
+  document.getElementById('inv-count').textContent = `(${list.length})`;
+  const el = document.getElementById('inv-list');
+  if (!list.length) {
+    el.innerHTML = '<div class="empty-wrap"><div class="empty-icon">📦</div><div class="empty-text">No fabrics found</div></div>';
     return;
   }
-
-  document.getElementById('inventory-list').innerHTML = filtered.map(f => {
-    const pct = Math.min(100, (f.meters / (f.threshold * 3)) * 100);
-    const status = f.meters <= f.threshold ? 'low' : f.meters <= f.threshold * 1.5 ? 'medium' : 'ok';
-    const barColor = status === 'low' ? 'var(--red)' : status === 'medium' ? 'var(--gold)' : 'var(--green)';
+  el.innerHTML = list.map(f => {
+    const pct = Math.min(100, Math.round((f.meters / (f.threshold * 3)) * 100));
+    const status = f.meters < f.threshold ? 'low' : f.meters < f.threshold*1.5 ? 'mid' : 'ok';
+    const barColor = status==='low' ? 'var(--red)' : status==='mid' ? 'var(--amber)' : 'var(--green-mid)';
+    const pill = status==='low'
+      ? '<span class="pill pill-red">LOW</span>'
+      : status==='mid' ? '<span class="pill pill-amber">MEDIUM</span>'
+      : '<span class="pill pill-green">OK</span>';
     return `
-      <div class="fabric-card ${status}">
-        <div class="fabric-top">
-          <div>
-            <div class="fabric-name">${f.name}</div>
-            <div class="fabric-type">${f.type} • ${f.color}</div>
-          </div>
-          <div class="fabric-meter">
-            <div class="meter-value">${f.meters}</div>
-            <div class="meter-label">meters</div>
-          </div>
+      <div class="fabric-row ${status}-row">
+        <div>
+          <div class="fab-name">${f.name} ${pill}</div>
+          <div class="fab-meta">${f.type} · ${f.color} · ${f.supplier}</div>
         </div>
-        <div class="fabric-bar">
-          <div class="fabric-bar-fill" style="width:${pct}%; background:${barColor}"></div>
+        <div class="fab-bar-wrap">
+          <div class="fab-bar"><div class="fab-bar-fill" style="width:${pct}%;background:${barColor}"></div></div>
+          <div class="fab-bar-text">Alert: ${f.threshold}m</div>
         </div>
-        <div class="fabric-meta">
-          <span>Alert at ${f.threshold}m ${status === 'low' ? '<span class="low-badge">LOW</span>' : ''}</span>
-          <span>₹${f.rate}/m</span>
+        <div class="fab-meter">
+          <div class="fab-meter-val">${f.meters}</div>
+          <div class="fab-meter-lbl">meters</div>
         </div>
-      </div>
-    `;
+        <div class="fab-rate">₹${f.rate}/m</div>
+      </div>`;
   }).join('');
 }
 
-// ─── STATS ────────────────────────────────────────────────────────────────
+// ── STATS ─────────────────────────────────────────────────
 function updateStats() {
-  const total = inventory.reduce((a, f) => a + f.meters, 0);
-  const lowCount = inventory.filter(f => f.meters < f.threshold).length;
-  const value = inventory.reduce((a, f) => a + (f.meters * f.rate), 0);
-
-  document.getElementById('stat-fabrics').innerHTML = `${inventory.length} <span class="stat-unit">items</span>`;
-  document.getElementById('stat-meters').innerHTML = `${total.toLocaleString()} <span class="stat-unit">m</span>`;
-  document.getElementById('stat-low').innerHTML = `${lowCount} <span class="stat-unit" style="color:var(--muted)">items</span>`;
-  document.getElementById('stat-value').textContent = `₹${value.toLocaleString()}`;
+  const totalM = inv.reduce((a,f)=>a+f.meters,0);
+  const low = inv.filter(f=>f.meters<f.threshold).length;
+  const val = inv.reduce((a,f)=>a+(f.meters*f.rate),0);
+  document.getElementById('st-fab').textContent = inv.length;
+  document.getElementById('st-m').textContent = totalM.toLocaleString('en-IN')+'m';
+  document.getElementById('st-low').textContent = low;
+  document.getElementById('st-val').textContent = val >= 100000
+    ? '₹'+(val/100000).toFixed(1)+'L'
+    : '₹'+val.toLocaleString('en-IN');
 }
 
-// ─── AI CHAT ──────────────────────────────────────────────────────────────
-async function sendMessage() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if (!text) return;
+// ── AI CHAT ───────────────────────────────────────────────
+async function sendMsg() {
+  const inp = document.getElementById('chat-inp');
+  const q = inp.value.trim();
+  if (!q) return;
+  inp.value = '';
 
-  addUserMessage(text);
-  input.value = '';
+  addUserMsg(q);
   showTyping();
 
-  // Build context
-  const stockContext = inventory.map(f =>
-    `${f.name} (${f.type}, ${f.color}): ${f.meters}m available, threshold ${f.threshold}m, rate ₹${f.rate}/m`
-  ).join('\n');
-
-  const todaySales = sales.filter(s => {
-    const today = new Date(); const sd = new Date(s.date);
-    return sd.toDateString() === today.toDateString();
-  });
-  const salesContext = todaySales.length
-    ? todaySales.map(s => `${s.fabricName}: ${s.meters}m sold to ${s.customer} for ₹${s.total}`).join('\n')
+  const ctx = inv.map(f => `${f.name} (${f.type}, ${f.color}): ${f.meters}m, threshold ${f.threshold}m, ₹${f.rate}/m`).join('\n');
+  const todaySales = sales.filter(s => new Date(s.date).toDateString() === new Date().toDateString());
+  const saleCtx = todaySales.length
+    ? todaySales.map(s=>`${s.fabName}: ${s.meters}m to ${s.customer} = ₹${s.total}`).join('\n')
     : 'No sales today';
 
-  const prompt = `You are a friendly textile stock management AI assistant for an Indian textile shop in Surat. 
-Answer ONLY based on the inventory data below. Reply in Hinglish (mix of Hindi and English, like how people in Surat talk). Keep answers short, friendly and use emojis.
+  const prompt = `You are Saathi AI, a friendly textile stock assistant for a Surat textile shop. Answer in short Hinglish (Hindi + English mix). Use bold for key numbers. Max 2-3 sentences. Only use data provided.
 
-Current Inventory:
-${stockContext || 'No items in inventory yet'}
+Inventory:
+${ctx||'Empty'}
 
 Today's Sales:
-${salesContext}
+${saleCtx}
 
-Total Items: ${inventory.length}
-Total Stock: ${inventory.reduce((a,f) => a+f.meters, 0)}m
-Low Stock Items: ${inventory.filter(f => f.meters < f.threshold).map(f => f.name).join(', ') || 'None'}
-Total Value: ₹${inventory.reduce((a,f) => a+(f.meters*f.rate), 0).toLocaleString()}
+Stats: ${inv.length} fabrics, ${inv.reduce((a,f)=>a+f.meters,0)}m total, ₹${inv.reduce((a,f)=>a+(f.meters*f.rate),0).toLocaleString()} value
+Low stock: ${inv.filter(f=>f.meters<f.threshold).map(f=>f.name).join(', ')||'None'}
 
-User question: ${text}
-
-Answer concisely in Hinglish. Use bold for numbers/fabric names. If they ask about a specific fabric, give exact numbers.`;
+User: ${q}`;
 
   try {
-    const response = await fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
       body: JSON.stringify({
-        model: "claude-sonnet-4-20250514",
-        max_tokens: 1000,
-        messages: [{ role: "user", content: prompt }]
+        model:'claude-sonnet-4-20250514',
+        max_tokens:1000,
+        messages:[{role:'user',content:prompt}]
       })
     });
-
-    const data = await response.json();
-    const reply = data.content?.[0]?.text || "Maafi chahta hoon, kuch problem aa gayi. Dobara try karo.";
-    hideTyping();
-    addAIMessage(reply);
-  } catch (e) {
-    hideTyping();
-    addAIMessage("Network issue aa gayi hai. Please dobara try karo. 🙏");
+    const data = await res.json();
+    const reply = data.content?.[0]?.text || 'Kuch problem aa gayi, dobara try karo.';
+    removeTyping();
+    addAIMsg(reply);
+  } catch(e) {
+    removeTyping();
+    addAIMsg('Network issue! Thodi der mein dobara try karo. 🙏');
   }
 }
 
-function quickAsk(q) {
-  document.getElementById('chat-input').value = q;
-  sendMessage();
+function qask(q) {
+  document.getElementById('chat-inp').value = q;
+  sendMsg();
 }
 
-function addUserMessage(text) {
-  const now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
-  const el = document.createElement('div');
-  el.className = 'msg user';
-  el.innerHTML = `
-    <div class="msg-avatar">👤</div>
-    <div>
-      <div class="msg-bubble">${escapeHtml(text)}</div>
-      <div class="msg-time">${now}</div>
-    </div>`;
-  document.getElementById('chat-messages').appendChild(el);
-  scrollChat();
+function addUserMsg(t) {
+  const now = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const d = document.createElement('div');
+  d.className = 'msg user';
+  d.innerHTML = `<div class="msg-av">👤</div><div><div class="msg-bubble">${esc(t)}</div><div class="msg-time">${now}</div></div>`;
+  const c = document.getElementById('chat-msgs');
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
 }
 
-function addAIMessage(text) {
-  const now = new Date().toLocaleTimeString('en-IN', {hour:'2-digit', minute:'2-digit'});
-  const el = document.createElement('div');
-  el.className = 'msg ai';
-  el.innerHTML = `
-    <div class="msg-avatar">🤖</div>
-    <div>
-      <div class="msg-bubble">${text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</div>
-      <div class="msg-time">${now}</div>
-    </div>`;
-  document.getElementById('chat-messages').appendChild(el);
-  scrollChat();
+function addAIMsg(t) {
+  const now = new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit'});
+  const d = document.createElement('div');
+  d.className = 'msg ai';
+  d.innerHTML = `<div class="msg-av">🤖</div><div><div class="msg-bubble">${t.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')}</div><div class="msg-time">${now}</div></div>`;
+  const c = document.getElementById('chat-msgs');
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
 }
 
-let typingEl = null;
 function showTyping() {
-  typingEl = document.createElement('div');
-  typingEl.className = 'msg ai';
-  typingEl.id = 'typing-msg';
-  typingEl.innerHTML = `
-    <div class="msg-avatar">🤖</div>
-    <div class="msg-bubble">
-      <div class="typing"><span></span><span></span><span></span></div>
-    </div>`;
-  document.getElementById('chat-messages').appendChild(typingEl);
-  scrollChat();
+  const d = document.createElement('div');
+  d.className = 'msg ai'; d.id = 'typing';
+  d.innerHTML = `<div class="msg-av">🤖</div><div class="msg-bubble"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  const c = document.getElementById('chat-msgs');
+  c.appendChild(d); c.scrollTop = c.scrollHeight;
 }
 
-function hideTyping() {
-  document.getElementById('typing-msg')?.remove();
-}
+function removeTyping() { document.getElementById('typing')?.remove(); }
 
-function scrollChat() {
-  const c = document.getElementById('chat-messages');
-  c.scrollTop = c.scrollHeight;
-}
+function esc(t) { return t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
-function escapeHtml(text) {
-  return text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ─── TOAST ────────────────────────────────────────────────────────────────
-function showToast(msg, color = 'var(--green)') {
+// ── TOAST ─────────────────────────────────────────────────
+function toast(msg, bg='#1e5c35') {
   const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.style.background = color;
+  t.textContent = msg; t.style.background = bg;
   t.style.display = 'block';
-  setTimeout(() => { t.style.display = 'none'; }, 3000);
+  clearTimeout(t._tid);
+  t._tid = setTimeout(()=>{ t.style.display='none'; }, 3000);
 }
 
-// ─── INIT ─────────────────────────────────────────────────────────────────
+// ── INIT ──────────────────────────────────────────────────
 updateStats();
+renderInventory();
+populateRemDrop();
 </script>
-
 </body>
 </html>
