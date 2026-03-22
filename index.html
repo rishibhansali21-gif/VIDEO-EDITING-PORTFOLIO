@@ -1211,7 +1211,7 @@ select option { background: #1d1b18; }
 // ═══════════════════════════════════════════
 // STATE — all zero, fresh start
 // ═══════════════════════════════════════════
-const API_KEY = 'AIzaSyCH9bjEKE2bWjZgi2gP0c0oB0jwbxUFvZ8'; // ← Paste your Anthropic API key here when deploying
+const API_KEY = 'AIzaSyAy9eHLzoZLmbhMTfXydnib4hDSOArgoJM'; // ← aistudio.google.com se apna key yahan daalo
 
 let inv   = JSON.parse(localStorage.getItem('ss2_inv')   || '[]');
 let sales = JSON.parse(localStorage.getItem('ss2_sales') || '[]');
@@ -1571,33 +1571,53 @@ async function sendAI() {
   inp.value = '';
   addUserMsg(q); showTyping();
 
-  const ctx      = inv.map(f=>`${f.name}(${f.type},${f.color}):${f.meters}m,thresh ${f.threshold}m,₹${f.rate}/m`).join('\n');
-  const now      = new Date();
-  const mSales   = sales.filter(s=>{const d=new Date(s.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
-  const saleCtx  = mSales.length ? mSales.map(s=>`${s.fabName}:${s.meters}m=₹${s.total}`).join('\n') : 'No sales this month';
-  const totalVal = inv.reduce((a,f)=>a+f.meters*f.rate,0);
-  const lowList  = inv.filter(f=>f.meters<f.threshold).map(f=>f.name).join(', ') || 'None';
+  if (!API_KEY || API_KEY === 'PASTE_YOUR_GEMINI_KEY_HERE') {
+    removeTyping();
+    addAIMsg('API key nahi hai! File mein <strong>PASTE_YOUR_GEMINI_KEY_HERE</strong> ki jagah apni Gemini key daalo. aistudio.google.com se milegi. 🔑');
+    return;
+  }
 
-  const prompt = `You are Saathi AI, a friendly textile stock assistant for a Surat shop. Reply in short Hinglish. Bold key numbers. Max 3 sentences. Use only this data.
-Inventory:\n${ctx||'Empty'}
-Month sales:\n${saleCtx}
-Total: ${inv.length} fabrics, ${inv.reduce((a,f)=>a+f.meters,0)}m, value ${fmtVal(totalVal)}
-Low stock: ${lowList}
-User: ${q}`;
+  const ctx     = inv.map(f=>`${f.name}(${f.type},${f.color}):${f.meters}m,thresh ${f.threshold}m,Rs.${f.rate}/m`).join('\n');
+  const now     = new Date();
+  const mSales  = sales.filter(s=>{const d=new Date(s.date);return d.getMonth()===now.getMonth()&&d.getFullYear()===now.getFullYear();});
+  const saleCtx = mSales.length ? mSales.map(s=>`${s.fabName}:${s.meters}m=Rs.${s.total}`).join('\n') : 'No sales this month';
+  const totalVal= inv.reduce((a,f)=>a+f.meters*f.rate,0);
+  const lowList = inv.filter(f=>f.meters<f.threshold).map(f=>f.name).join(', ') || 'None';
+
+  const prompt = `You are Saathi AI, a friendly textile stock assistant for a Surat textile shop. Reply in short Hinglish (Hindi+English mix). Use **bold** for key numbers. Max 3 sentences. Only use data provided below.
+Inventory:
+${ctx||'Empty - no fabrics added yet'}
+This month sales:
+${saleCtx}
+Summary: ${inv.length} fabrics, ${inv.reduce((a,f)=>a+f.meters,0)}m total stock, value Rs.${Math.round(totalVal).toLocaleString()}
+Low stock items: ${lowList}
+User question: ${q}`;
 
   try {
-    const headers = { 'Content-Type':'application/json' };
-    if (API_KEY) headers['x-api-key'] = API_KEY;
-    const res  = await fetch('https://api.anthropic.com/v1/messages', {
-      method:'POST', headers,
-      body:JSON.stringify({ model:'claude-sonnet-4-20250514', max_tokens:1000, messages:[{role:'user',content:prompt}] })
-    });
+    const res = await fetch(
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=' + API_KEY,
+      {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: { maxOutputTokens: 400, temperature: 0.7 }
+        })
+      }
+    );
     const data = await res.json();
     removeTyping();
-    addAIMsg(data.content?.[0]?.text || 'Kuch problem aayi, dobara try karo.');
+    const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (reply) {
+      addAIMsg(reply);
+    } else if (data?.error) {
+      addAIMsg('Error: ' + data.error.message + ' — Gemini API key check karo.');
+    } else {
+      addAIMsg('Kuch problem aayi, dobara try karo.');
+    }
   } catch(e) {
     removeTyping();
-    addAIMsg('Network issue! API key check karo ya thodi der baad try karo. 🙏');
+    addAIMsg('Network issue! Internet connection check karo. 🙏');
   }
 }
 
