@@ -6506,10 +6506,269 @@ const obSteps = [
   }
 ];
 
-function showOnboarding() { 
-  obStep = 1; 
-  document.getElementById('onboarding').classList.add('on'); 
-  renderOBStep(); 
+function showOnboarding() {
+  showCompanySetup();
+}
+
+function showCompanySetup() {
+  const existing = document.getElementById('company-setup-screen');
+  if (existing) existing.remove();
+
+  const screen = document.createElement('div');
+  screen.id = 'company-setup-screen';
+  screen.style.cssText = `
+    position:fixed;inset:0;background:var(--bg);z-index:99998;
+    display:flex;flex-direction:column;font-family:var(--ff);
+  `;
+
+  screen.innerHTML = `
+    <div style="background:var(--indigo);padding:7px 16px;display:flex;align-items:center;justify-content:space-between;">
+      <span style="font-size:13px;font-weight:600;color:#fff;letter-spacing:0.2px;">Company Creation</span>
+      <span style="font-size:13px;font-weight:600;color:#fff;opacity:0.85;" id="cc-firm-header">StockSaathi</span>
+    </div>
+
+    <div style="flex:1;overflow-y:auto;display:flex;gap:0;">
+
+      <div style="flex:1;padding:0;border-right:0.5px solid var(--border2);">
+
+        <div style="padding:20px 28px 0;">
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">Company Name</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-firm" placeholder="e.g. Rishi Textiles" autofocus
+                style="flex:1;background:var(--amber-dim);border:1px solid var(--amber);border-radius:3px;padding:3px 8px;font-size:13px;color:var(--text);font-family:var(--ff);"
+                oninput="document.getElementById('cc-firm-header').textContent=this.value||'StockSaathi'"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">Mailing Name</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-mailing" placeholder="Same as company name"
+                style="flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--ff);"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:flex-start;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);padding-top:4px;">Address</label>
+            <div style="display:flex;align-items:flex-start;gap:6px;">
+              <span style="color:var(--text3);padding-top:4px;">:</span>
+              <textarea id="cc-address" rows="2" placeholder="Shop / godown address"
+                style="flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--ff);resize:none;"></textarea>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:0.5px solid var(--border2);margin:10px 0;"></div>
+
+        <div style="padding:0 28px;">
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">State</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <select id="cc-state"
+                style="flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--ff);">
+                <option value="Gujarat" selected>Gujarat</option>
+                <option>Maharashtra</option><option>Rajasthan</option><option>Delhi</option>
+                <option>Uttar Pradesh</option><option>Madhya Pradesh</option><option>Karnataka</option>
+                <option>Tamil Nadu</option><option>West Bengal</option><option>Other</option>
+              </select>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">Country</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <span style="font-size:13px;color:var(--text);font-weight:500;">India</span>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">Pincode</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-pin" type="number" placeholder="395003"
+                style="flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--ff);"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">Mobile</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-mobile" type="tel" placeholder="9876543210"
+                style="flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--ff);"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">E-mail</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-email" type="email" placeholder="shop@email.com"
+                style="flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--ff);"/>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:0.5px solid var(--border2);margin:10px 0;"></div>
+
+        <div style="padding:0 28px 20px;">
+          <div style="font-size:11px;font-weight:600;color:var(--indigo2);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">Tax Registration Details</div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">GSTIN</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-gstin" placeholder="24AAAAA0000A1Z5" style="text-transform:uppercase;
+                flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--fm);"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">PAN Number</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-pan" placeholder="ABCDE1234F" style="text-transform:uppercase;
+                flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--fm);"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">UPI ID</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-upi" placeholder="9876543210@paytm"
+                style="flex:1;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--ff);"/>
+            </div>
+          </div>
+        </div>
+
+        <div style="border-top:0.5px solid var(--border2);margin:10px 0;"></div>
+
+        <div style="padding:0 28px 20px;">
+          <div style="font-size:11px;font-weight:600;color:var(--indigo2);letter-spacing:0.5px;text-transform:uppercase;margin-bottom:10px;">Owner Profile</div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;margin-bottom:10px;">
+            <label style="font-size:13px;color:var(--text2);">Your Name</label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-owner" placeholder="e.g. Rishi Bhansali"
+                style="flex:1;background:var(--amber-dim);border:1px solid var(--amber);border-radius:3px;padding:3px 8px;font-size:13px;color:var(--text);font-family:var(--ff);"/>
+            </div>
+          </div>
+          <div style="display:grid;grid-template-columns:180px 1fr;align-items:center;gap:4px;">
+            <label style="font-size:13px;color:var(--text2);">PIN <span style="font-size:11px;color:var(--text3);">(optional)</span></label>
+            <div style="display:flex;align-items:center;gap:6px;">
+              <span style="color:var(--text3);">:</span>
+              <input id="cc-ownerpin" type="password" maxlength="4" placeholder="4-digit PIN"
+                style="width:120px;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:13px;color:var(--text);font-family:var(--fm);letter-spacing:4px;"/>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div style="width:260px;flex-shrink:0;padding:20px 20px;">
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:10px;">
+          <label style="font-size:13px;color:var(--text2);">Financial year from</label>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="color:var(--text3);">:</span>
+            <span style="font-size:13px;color:var(--text);font-weight:500;">1-Apr-26</span>
+          </div>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px;margin-bottom:20px;">
+          <label style="font-size:13px;color:var(--text2);">Base Currency</label>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="color:var(--text3);">:</span>
+            <span style="font-size:13px;color:var(--text);font-weight:500;">₹ INR</span>
+          </div>
+        </div>
+
+        <div style="background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--r);padding:14px;margin-bottom:14px;">
+          <div style="font-size:11px;color:var(--text3);margin-bottom:8px;text-transform:uppercase;letter-spacing:0.5px;">Bank Details</div>
+          <div style="margin-bottom:8px;">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px;">Bank Name</div>
+            <input id="cc-bank" placeholder="e.g. SBI, HDFC"
+              style="width:100%;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:12px;color:var(--text);font-family:var(--ff);"/>
+          </div>
+          <div style="margin-bottom:8px;">
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px;">Account Number</div>
+            <input id="cc-accno" placeholder="XXXXXXXXXXXX" type="number"
+              style="width:100%;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:12px;color:var(--text);font-family:var(--fm);"/>
+          </div>
+          <div>
+            <div style="font-size:11px;color:var(--text3);margin-bottom:3px;">IFSC Code</div>
+            <input id="cc-ifsc" placeholder="SBIN0001234" style="text-transform:uppercase;
+              width:100%;background:transparent;border:none;border-bottom:0.5px solid var(--border2);padding:3px 4px;font-size:12px;color:var(--text);font-family:var(--fm);"/>
+          </div>
+        </div>
+
+        <div style="background:var(--indigo-dim);border:0.5px solid rgba(59,130,246,0.2);border-radius:var(--r);padding:12px;font-size:12px;color:var(--text2);line-height:1.6;">
+          Company data saved to Firebase cloud. Access from any device with your Google account.
+        </div>
+      </div>
+    </div>
+
+    <div style="border-top:0.5px solid var(--border2);padding:8px 16px;display:flex;align-items:center;justify-content:space-between;background:var(--bg2);">
+      <div style="font-size:12px;color:var(--text3);">Press <kbd style="background:var(--bg3);padding:1px 6px;border-radius:3px;font-size:11px;">A</kbd> to Accept &nbsp;&nbsp; <kbd style="background:var(--bg3);padding:1px 6px;border-radius:3px;font-size:11px;">Q</kbd> to Quit</div>
+      <div style="display:flex;gap:10px;">
+        <button onclick="document.getElementById('company-setup-screen').remove();renderAll();"
+          style="padding:6px 20px;background:transparent;border:0.5px solid var(--border2);border-radius:4px;color:var(--text2);font-size:12px;font-family:var(--ff);cursor:pointer;">
+          Q: Quit
+        </button>
+        <button onclick="saveCompanySetup()"
+          style="padding:6px 24px;background:var(--indigo);border:none;border-radius:4px;color:#fff;font-size:12px;font-weight:600;font-family:var(--ff);cursor:pointer;">
+          A: Accept
+        </button>
+      </div>
+    </div>
+  `;
+
+  document.body.appendChild(screen);
+
+  document.addEventListener('keydown', function ccKey(e) {
+    if (e.key === 'a' || e.key === 'A') {
+      if (!['INPUT','TEXTAREA','SELECT'].includes(document.activeElement.tagName)) {
+        saveCompanySetup();
+        document.removeEventListener('keydown', ccKey);
+      }
+    }
+  });
+}
+
+async function saveCompanySetup() {
+  const firm = document.getElementById('cc-firm')?.value.trim();
+  const owner = document.getElementById('cc-owner')?.value.trim();
+
+  if (!firm) { toast('Company name zaroori hai!'); document.getElementById('cc-firm').focus(); return; }
+  if (!owner) { toast('Owner ka naam zaroori hai!'); document.getElementById('cc-owner').focus(); return; }
+
+  settings = {
+    firm,
+    mailingName: document.getElementById('cc-mailing')?.value.trim() || firm,
+    address: document.getElementById('cc-address')?.value.trim() || '',
+    state: document.getElementById('cc-state')?.value || 'Gujarat',
+    pincode: document.getElementById('cc-pin')?.value.trim() || '',
+    mobile: document.getElementById('cc-mobile')?.value.trim() || '',
+    email: document.getElementById('cc-email')?.value.trim() || '',
+    gstin: document.getElementById('cc-gstin')?.value.trim().toUpperCase() || '',
+    pan: document.getElementById('cc-pan')?.value.trim().toUpperCase() || '',
+    upi: document.getElementById('cc-upi')?.value.trim() || '',
+    bank: document.getElementById('cc-bank')?.value.trim() || '',
+    accNo: document.getElementById('cc-accno')?.value.trim() || '',
+    ifsc: document.getElementById('cc-ifsc')?.value.trim().toUpperCase() || '',
+  };
+
+  try {
+    if (DB !== 'LOCAL') {
+      await FB.setDoc(FB.doc(DB, `${userPath()}/config/settings`), settings);
+    } else {
+      localStorage.setItem('ss_settings', JSON.stringify(settings));
+    }
+  } catch(e) { console.error(e); }
+
+  const pin = document.getElementById('cc-ownerpin')?.value.trim() || '';
+  const profileData = { name: owner, role: 'owner', pin };
+  const id = await fbSave('profiles', profileData);
+  profiles.push({ id, ...profileData });
+
+  document.getElementById('company-setup-screen')?.remove();
+  applyProfile({ id, ...profileData });
+  toast(`Welcome, ${owner}! Company "${firm}" setup ho gayi.`, 3500);
 }
 
 function renderOBStep() {
